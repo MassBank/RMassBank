@@ -8,27 +8,36 @@
 #' This method takes the info which is added to the aggregated table in the reanalysis and 
 #' multiplicity filtering steps of the workflow, and adds it back into the spectra.
 #' 
+#' @param o msmsWorkspace, RmbSpectraSet or RmbSpectrum2
+#' The object information is filled back into. If applied to an RmbSpectraSet, information is added to all its RmbSpectrum2 children. If applied to the whole msmsWorkspace, information is added to all SpectraSets.
+#' @param id character or missing
+#' The id of the parent RmbSpectraSet if applied to RmbSpectrum2
+#' @param aggregated data.frame or missing
+#' The aggregated table of the parent msmsWorkspace if applied to RmbSpectraSet or RmbSpectrum2
+#' @return o msmsWorkspace, RmbSpectraSet or Rmbspectrum2
+#' The same object that was given as input with new information filled into it
+#' @rdname fillback
 #' @export
-setGeneric("fillback", function(o, ...) standardGeneric("fillback"))
+setGeneric("fillback", function(o, id, aggregated) standardGeneric("fillback"))
 
-#' @export
-setMethod("fillback", c("msmsWorkspace"), function(o, ...)
+#' @rdname fillback
+setMethod("fillback", c("msmsWorkspace", "missing", "missing"), function(o)
     {
       for(i in seq_len(length(o@spectra)))
         o@spectra[[i]] <- fillback(o@spectra[[i]], o@aggregated)
       o
     })
 
-#' @export
-setMethod("fillback", c("RmbSpectraSet"), function(o, aggregated)
+#' @rdname fillback
+setMethod("fillback", c("RmbSpectraSet", "missing", "data.frame"), function(o, aggregated)
     {
       for(i in seq_len(length(o@children)))
         o@children[[i]] <- fillback(o@children[[i]], o@id, aggregated)
       o
     })
 
-#' @export
-setMethod("fillback", c("RmbSpectrum2"), function(o, id, aggregated)
+#' @rdname fillback
+setMethod("fillback", c("RmbSpectrum2", "character", "data.frame"), function(o, id, aggregated)
     {
       .fillback(o, id, aggregated)  
     })

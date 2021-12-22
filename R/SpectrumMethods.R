@@ -289,7 +289,7 @@ setMethod("addProperty", c("RmbSpectrum2", "character", "character", "ANY"), fun
 #setGeneric("setData",	function(s, df, ...) standardGeneric("setData"))
 
 
-#' @export
+#' @rdname property
 setMethod("property", c("RmbSpectrum2", "character"), function(o, property)
 		{
 			if(property %in% colnames(o@properties))
@@ -315,16 +315,16 @@ setMethod("property", c("RmbSpectrum2", "character"), function(o, property)
 }
 
 
-#' @export
+#' @rdname property-set
 setMethod("property<-", signature(o="RmbSpectrum2", property="character", addNew="logical", class="character", value="ANY"), .propertySet )
 
-#' @export
+#' @rdname property-set
 setMethod("property<-", signature(o="RmbSpectrum2", property="character", addNew="missing", class="character", value="ANY"), .propertySet )
 
-#' @export
+#' @rdname property-set
 setMethod("property<-", signature(o="RmbSpectrum2", property="character", addNew="logical", class="missing", value="ANY"), .propertySet)
 
-#' @export
+#' @rdname property-set
 setMethod("property<-", signature(o="RmbSpectrum2", property="character", addNew="missing", class="missing", value="ANY"), .propertySet )
 
 

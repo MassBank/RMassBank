@@ -544,7 +544,6 @@ analyzeMsMs.formula <- function(msmsPeaks, mode="pH", detail=FALSE, run="prelimi
   # with insufficient match accuracy or no match.
   analyzeTandemShot <- function(child, childIdx = 0)
   {
-
   	shot <- getData(child)
   	shot$row <- which(!is.na(shot$mz))
   	
@@ -797,8 +796,8 @@ analyzeMsMs.formula <- function(msmsPeaks, mode="pH", detail=FALSE, run="prelimi
   	countFormulas <- colSums(countFormulasTab)
   	childPeaksGood$formulaCount <- countFormulas[as.character(childPeaksGood$mz)]
   	  
-  	childPeaksUnassigned$formulaCount <- rep(NA, nrow(childPeaksUnassigned))
-  	childPeaksBad$formulaCount <- rep(NA, nrow(childPeaksBad))
+  	childPeaksUnassigned$formulaCount <- rep(0, nrow(childPeaksUnassigned))
+  	childPeaksBad$formulaCount <- rep(0, nrow(childPeaksBad))
   	childPeaksBad$good <- rep(FALSE, nrow(childPeaksBad))
       
   	# Now: childPeaksGood (containing the new, recounted peaks with good = TRUE), and childPeaksBad (containing the 

@@ -7,17 +7,21 @@
 parseMassBank(Files)
 }
 \arguments{
-\item{Files}{A path to the plaintext-record that should be read}
+\item{Files}{array of character-strings
+Paths to the plaintext-records that should be read}
 }
 \value{
 The \code{mbWorkspace} that the plaintext-record creates.
+All parsed information will be stored in the 'compiled_ok' slot.
 }
 \description{
 Can parse MassBank-records(only V2)
 }
 \examples{
 \dontrun{
-		parseMassBank("filepath_to_records/RC00001.txt")
+	paths <- c("filepath_to_records/RC000001.txt",
+	           "filepath_to_records/RC000002.txt")
+		mb <- parseMassBank(paths)
 }
 }
 \seealso{

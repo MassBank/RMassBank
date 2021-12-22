@@ -36,9 +36,9 @@
 #' 
 #' TODO: consider whether to add functionality to move reanalysis stuff from legacy data back in.
 #' 
-#' @param w 
-#' @returnType 
-#' @return 
+#' @param w RmbSpectrum2
+#' The object to be updated
+#' @return The updated RmbSpectrum2 object
 #' 
 #' @author stravsmi
 #' @export

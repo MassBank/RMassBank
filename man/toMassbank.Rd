@@ -76,7 +76,7 @@ MassBank record format:
 \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
 }
 \seealso{
-\code{\link{compileRecord}}, \code{\link{mbWorkflow}}
+\code{\link{buildRecord}}, \code{\link{mbWorkflow}}
 }
 \author{
 Michael Stravs

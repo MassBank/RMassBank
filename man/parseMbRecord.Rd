@@ -2,16 +2,20 @@
 % Please edit documentation in R/parseMbRecord.R
 \name{parseMbRecord}
 \alias{parseMbRecord}
-\alias{parseMassBank}
 \title{MassBank-record Parser}
 \usage{
-parseMassBank(Files)
+parseMbRecord(filename, readAnnotation=TRUE)
 }
 \arguments{
-\item{Files}{A path to the plaintext-record that should be read}
+\item{filename}{character
+A path to the plaintext-record that should be read}
+
+\item{readAnnotation}{logical, Default: TRUE
+If TRUE, parse annotations from the record file and add columns for
+'formula', 'formulaCount', 'mzCalc' and 'dppm' to the peak table}
 }
 \value{
-The \code{mbWorkspace} that the plaintext-record creates.
+An \code{RmbSpectrum2} object created from the plaintext-record
 }
 \description{
 Can parse MassBank-records(only V2)

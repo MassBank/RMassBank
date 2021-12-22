@@ -2,9 +2,32 @@
 % Please edit documentation in R/fillback.R
 \name{fillback}
 \alias{fillback}
+\alias{fillback,msmsWorkspace,missing,missing-method}
+\alias{fillback,RmbSpectraSet,missing,data.frame-method}
+\alias{fillback,RmbSpectrum2,character,data.frame-method}
 \title{Fill back reanalyzed / refiltered peak info into spectra}
 \usage{
-fillback(o, ...)
+fillback(o, id, aggregated)
+
+\S4method{fillback}{msmsWorkspace,missing,missing}(o)
+
+\S4method{fillback}{RmbSpectraSet,missing,data.frame}(o, aggregated)
+
+\S4method{fillback}{RmbSpectrum2,character,data.frame}(o, id, aggregated)
+}
+\arguments{
+\item{o}{msmsWorkspace, RmbSpectraSet or RmbSpectrum2
+The object information is filled back into. If applied to an RmbSpectraSet, information is added to all its RmbSpectrum2 children. If applied to the whole msmsWorkspace, information is added to all SpectraSets.}
+
+\item{id}{character or missing
+The id of the parent RmbSpectraSet if applied to RmbSpectrum2}
+
+\item{aggregated}{data.frame or missing
+The aggregated table of the parent msmsWorkspace if applied to RmbSpectraSet or RmbSpectrum2}
+}
+\value{
+o msmsWorkspace, RmbSpectraSet or Rmbspectrum2
+The same object that was given as input with new information filled into it
 }
 \description{
 This method takes the info which is added to the aggregated table in the reanalysis and 

@@ -12,7 +12,7 @@ annotator.default(annotation, formulaTag)
      "dbe","mz","int","formulaCount","parentScan","fM_factor","dppmBest",
     "formulaMultiplicity","intrel","mzSpec"}}
 
-\item{type}{The ion type to be added to annotated formulas ("+" or "-" usually)}
+\item{formulaTag}{The ion type to be added to annotated formulas ("+" or "-" usually)}
 }
 \value{
 The annotated peak table. Table \code{colnames()} will be used for the

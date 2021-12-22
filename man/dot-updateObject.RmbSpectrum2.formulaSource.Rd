@@ -7,10 +7,11 @@
 .updateObject.RmbSpectrum2.formulaSource(w)
 }
 \arguments{
-\item{w}{}
+\item{w}{RmbSpectrum2
+The object to be updated}
 }
 \value{
-
+The updated RmbSpectrum2 object
 }
 \description{
 TODO: consider whether to add functionality to move reanalysis stuff from legacy data back in.

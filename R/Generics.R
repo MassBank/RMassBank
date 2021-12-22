@@ -39,5 +39,45 @@ setGeneric("selectPeaks", function(o, ...) standardGeneric("selectPeaks"))
 #' @export
 setGeneric("addProperty", function(o, name, type, value=NA) standardGeneric("addProperty"))
 
+#' Get a property of an RmbSpectrum2 object
+#'
+#' This searches the 'properties' slot of the object
+#' and returns a column with matching name (if found)
+#' or NULL otherwise.
+#'
+#' @param o \code{RmbSpectrum2}
+#' @param property character
+#' The name of a property
+#' @return The corresponding column of \code{o@properties}
+#' @rdname property
+#' @export
 setGeneric("property", function(o, property) standardGeneric("property"))
+
+#' Replacement function to set properties of an RmbSpectrum2 object
+#'
+#' Update the 'properties' slot of the given object.
+#' If the column you want to update does not exist yet and
+#' \code{addNew = FALSE} (default), this will cause a warning
+#' and the object will not be changed
+#'
+#' Please note that this is a replacement method, meaning that
+#' \code{property(o, property) <- value}
+#' can be used as a short-hand for the equivalent
+#' \code{o <- 'property<-'(o, property, value)}
+#'
+#' @usage property(o, property, addNew=FALSE, class="") <- value
+#' @param o \code{RmbSpectrum2}
+#' The object whos 'properties' slot should be updated
+#' @param property character
+#' The name of the column in the 'properties' data frame to be updated
+#' @param addNew logical, Default: FALSE
+#' Whether or not a new column should be added in case a column of the
+#' given name does not exist yet.
+#' @param class character or missing
+#' The class of the entries for the column to be added/updated
+#' @param value ANY
+#' The value(s) to be written into the column
+#' @return The \code{RmbSpectrum2} object with an updated 'properties' slot
+#' @rdname property-set
+#' @export
 setGeneric("property<-", function(o, property, addNew = FALSE, class="", value) standardGeneric("property<-"))

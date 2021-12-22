@@ -2,54 +2,44 @@
 # 
 # Author: stravsmi
 ###############################################################################
+
 #' @import assertthat
 
 
-#' @export
-setGeneric("buildRecord", function(o, ...) standardGeneric("buildRecord"))
-
-#' Compile MassBank records
+#' @title Build MassBank records
 #' 
-#' Takes a spectra block for a compound, as returned from
+#' @description Takes a spectra block for a compound, as returned from
 #' \code{\link{analyzeMsMs}}, and an aggregated cleaned peak table, together
 #' with a MassBank information block, as stored in the infolists and loaded via
 #' \code{\link{loadInfolist}}/\code{\link{readMbdata}} and processes them to a
 #' MassBank record
 #' 
-#' \code{compileRecord} calls \code{\link{gatherCompound}} to create blocks of
-#' spectrum data, and finally fills in the record title and accession number,
-#' renames the "internal ID" comment field and removes dummy fields.
-#' 
-#' @usage compileRecord(spec, mbdata, aggregated, additionalPeaks = NULL, retrieval="standard")
-#' @param spec A \code{RmbSpectraSet} for a compound, after analysis (\code{\link{analyzeMsMs}}).
+#' @usage buildRecord(o, ..., cpd, mbdata, analyticalInfo, additionalPeaks)
+#' @param o \code{RmbSpectraSet} or \code{RmbSpectrum2}
+#' The spectra (or single spectrum) should be taken from a compound after analysis (\code{\link{analyzeMsMs}}).
 #' Note that \bold{peaks are not read from this
 #' object anymore}: Peaks come from the \code{aggregated} dataframe (and from
 #' the global \code{additionalPeaks} dataframe; cf. \code{\link{addPeaks}} for
 #' usage information.)
-#' @param mbdata The information data block for the record header, as stored in
+#' @param ...
+#' keyword arguments for intensity normalization and peak selection (see \code{\link{normalize}} and \code{\link{selectPeaks}})
+#' @param cpd \code{RmbSpectraSet} or missing
+#' In case o is an \code{RmbSpectrum2}, this represents the \code{RmbSpectraSet} it belongs to
+#' @param mbdata list
+#' The information data block for the record header, as stored in
 #' \code{mbdata_relisted} after loading an infolist.
-#' @param aggregated An aggregated peak data table containing information about refiltered spectra etc.
-#' @param additionalPeaks If present, a table with additional peaks to add into the spectra.
+#' @param additionalPeaks data.frame
+#' If present, a table with additional peaks to add into the spectra.
 #' 		As loaded with \code{\link{addPeaks}}.
-#' @param retrieval A value that determines whether the files should be handled either as "standard",
-#' if the compoundlist is complete, "tentative", if at least a formula is present or "unknown"
-#' if the only know thing is the m/z
-#' @return Returns a MassBank record in list format: e.g.
-#' \code{list("ACCESSION" = "XX123456", "RECORD_TITLE" = "Cubane", ...,
-#' "CH\$LINK" = list( "CAS" = "12-345-6", "CHEMSPIDER" = 1111, ...))}
+#' @return An object of the same type as was used for the input with new information added to it
 #' @author Michael Stravs
 #' @seealso \code{\link{mbWorkflow}}, \code{\link{addPeaks}},
 #' \code{\link{gatherCompound}}, \code{\link{toMassbank}}
 #' @references MassBank record format:
 #' \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
-#' @examples
-#' 
-#' #
-#' \dontrun{myspec <- w@@spectra[[2]]}
-#' # after having loaded an infolist:
-#' \dontrun{mbdata <- mbdata_relisted[[which(mbdata_archive\$id == as.numeric(myspec\$id))]]}
-#' \dontrun{compiled <- compileRecord(myspec, mbdata, w@@aggregated)}
-#' 
+#' @rdname buildRecord
+#' @export
+setGeneric("buildRecord", function(o, ..., cpd, mbdata, analyticalInfo, additionalPeaks) standardGeneric("buildRecord"))
 
 .buildRecord.RmbSpectraSet <- function(cpd, ..., mbdata = list(), additionalPeaks = NULL)
 {
@@ -70,7 +60,7 @@ setGeneric("buildRecord", function(o, ...) standardGeneric("buildRecord"))
   cpd
 }
 
-#' @export
+#' @rdname buildRecord
 setMethod("buildRecord", "RmbSpectraSet", function(o, ..., mbdata = list(), additionalPeaks = NULL)
       .buildRecord.RmbSpectraSet(cpd=o, ..., mbdata = mbdata, additionalPeaks = additionalPeaks)
     )
@@ -99,6 +89,7 @@ setMethod("buildRecord", "RmbSpectraSet", function(o, ..., mbdata = list(), addi
 
 # For each compound, this function creates the "lower part" of the MassBank record, i.e.
 # everything that comes after AC$INSTRUMENT_TYPE.
+
 #' Compose data block of MassBank record
 #' 
 #' \code{gatherCompound} composes the data blocks (the "lower half") of all
@@ -132,7 +123,7 @@ setMethod("buildRecord", "RmbSpectraSet", function(o, ..., mbdata = list(), addi
 #' @note Note that the global table \code{additionalPeaks} is also used as an
 #' additional source of peaks.
 #' @author Michael Stravs
-#' @seealso \code{\link{mbWorkflow}}, \code{\link{compileRecord}}
+#' @seealso \code{\link{mbWorkflow}}, \code{\link{buildRecord}}
 #' @references MassBank record format:
 #' \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
 #' @examples \dontrun{
@@ -187,21 +178,7 @@ getAnalyticalInfo <- function(cpd = NULL)
 }
 
 
-# Process one single MSMS child scan.
-# spec: an object of "analyzedSpectrum" type (i.e. contains 
-#       14x (or other number) msmsdata, info, mzrange,
-#       compound ID, parent MS1, cpd id...)
-# msmsdata: the msmsdata sub-object from the spec which is the child scan we want to process.
-#       Contains childFilt, childBad, scan #, etc. Note that the peaks are actually not
-#       taken from here! They were taken from msmsdata initially, but after introduction
-#       of the refiltration and multiplicity filtering, this was changed. Now only the
-#       scan information is actually taken from msmsdata.
-# ac_ms, ac_lc: pre-filled info for the MassBank dataset (see above)
-# refiltered: the refilteredRcSpecs dataset which contains our good peaks :)
-#       Contains peaksOK, peaksReanOK, peaksFiltered, peaksFilteredReanalysis, 
-#       peaksProblematic. Currently we use peaksOK and peaksReanOK to create the files.
-#       (Also, the global additionalPeaks table is used.)
-#' @export
+#' @rdname buildRecord
 setMethod("buildRecord", "RmbSpectrum2", function(o, ..., cpd = NULL, mbdata = list(), analyticalInfo = list(), additionalPeaks = NULL)
       .buildRecord.RmbSpectrum2(spectrum = o, cpd=cpd, mbdata=mbdata, analyticalInfo=analyticalInfo, additionalPeaks=additionalPeaks, ...)
 )
@@ -442,6 +419,7 @@ setMethod("buildRecord", "RmbSpectrum2", function(o, ..., cpd = NULL, mbdata = l
 	  'cpd, spectrum, subscan in this order'))
 	accessionBuilder(cpd, spectrum, subscan)
 }
+
 renderPeaks <- function(spectrum, ..., cpd = NULL, additionalPeaks = NULL)
 {
 	# Select all peaks which belong to this spectrum (correct cpdID and scan no.)

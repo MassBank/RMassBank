@@ -4,11 +4,12 @@
 \alias{.parseTitleString}
 \title{Parse record title}
 \usage{
-.parseTitleString(mbrecord)
+.parseTitleString(mbdata)
 }
 \arguments{
-\item{mbrecord}{A MassBank record in list format, as returned from
-\code{\link{gatherSpectrum}}.}
+\item{mbdata}{list
+The information data block for the record header, as stored in
+\code{mbdata_relisted} after loading an infolist.}
 }
 \value{
 A string with the title.
@@ -23,8 +24,8 @@ version 1 or 2).
 }
 \examples{
 \dontrun{
-		# used in compileRecord()
-		title <- .parseTitleString(mbrecord)
+		# used in buildRecord()
+		title <- .parseTitleString(mbdata)
 }
 
 
@@ -35,7 +36,7 @@ MassBank record format:
 \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
 }
 \seealso{
-\code{\link{compileRecord}}
+\code{\link{buildRecord}}
 }
 \author{
 Michael Stravs, Eawag

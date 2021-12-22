@@ -1279,7 +1279,7 @@ readMbdata <- function(row)
 #'      "dbe","mz","int","formulaCount","parentScan","fM_factor","dppmBest",
 #'     "formulaMultiplicity","intrel","mzSpec"}
 #' 
-#' @param type The ion type to be added to annotated formulas ("+" or "-" usually)
+#' @param formulaTag The ion type to be added to annotated formulas ("+" or "-" usually)
 #' 
 #' @return The annotated peak table. Table \code{colnames()} will be used for the
 #' 		titles (preferrably don't use spaces in the column titles; however no format is
@@ -1317,23 +1317,24 @@ annotator.default <- function(annotation, formulaTag)
 #' If the option is not set, a standard title format is used (for record definition
 #' version 1 or 2).
 #' 
-#' @usage .parseTitleString(mbrecord)
-#' @param mbrecord A MassBank record in list format, as returned from
-#' 	\code{\link{gatherSpectrum}}.
+#' @usage .parseTitleString(mbdata)
+#' @param mbdata list
+#' The information data block for the record header, as stored in
+#' \code{mbdata_relisted} after loading an infolist.
 #' @return A string with the title.
 #' @author Michael Stravs, Eawag
-#' @seealso \code{\link{compileRecord}}
+#' @seealso \code{\link{buildRecord}}
 #' @references MassBank record format:
 #' \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
 #' @examples
 #' \dontrun{
-#' 		# used in compileRecord()
-#' 		title <- .parseTitleString(mbrecord)
+#' 		# used in buildRecord()
+#' 		title <- .parseTitleString(mbdata)
 #' }
 #' 
 #' 
 #' 
-.parseTitleString <- function(mbrecord)
+.parseTitleString <- function(mbdata)
 {
 	
 	varlist <- getOption("RMassBank")$titleFormat
@@ -1383,9 +1384,9 @@ annotator.default <- function(annotation, formulaTag)
 				splitVar <- strsplit(arg, ": ")[[1]]
 				# Read the parameter value from the record
 				if(length(splitVar) == 2)
-					replaceVar <- mbrecord[[splitVar[[1]]]][[splitVar[[2]]]]
+					replaceVar <- mbdata[[splitVar[[1]]]][[splitVar[[2]]]]
 				else if(length(splitVar) ==  1)
-					replaceVar <- mbrecord[[splitVar]]
+					replaceVar <- mbdata[[splitVar]]
 				else
 					stop(paste(
 									"Title format is incorrectly specified:", var)
@@ -1414,6 +1415,7 @@ annotator.default <- function(annotation, formulaTag)
 # This converts the tree-like list (as obtained e.g. from compileRecord())
 # into a plain text array, which can then be dumped to a file suitable for 
 # MassBank upload.
+
 #' Write MassBank record into character array
 #' 
 #' Writes a MassBank record in list format to a text array.
@@ -1463,7 +1465,7 @@ annotator.default <- function(annotation, formulaTag)
 #' of \code{'CH\$NAME' = 'bla', 'CH\$NAME' = 'blub'} specify \code{'CH\$NAME' =
 #' c('bla','blub')}.
 #' @author Michael Stravs
-#' @seealso \code{\link{compileRecord}}, \code{\link{mbWorkflow}}
+#' @seealso \code{\link{buildRecord}}, \code{\link{mbWorkflow}}
 #' @references MassBank record format:
 #' \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
 #' @examples
@@ -1621,6 +1623,7 @@ setMethod("toMassbank", "RmbSpectrum2", function(o, addAnnotation = getOption("R
 # files: is a return value from lapply(toMassbank), i.e. contains 14 plain-text arrays
 #  (for a 14-spectra method)
 # molfile: a molfile from createMolfile
+
 #' Export internally stored MassBank data to files
 #' 
 #' Exports MassBank recfile data arrays and corresponding molfiles to physical
@@ -1632,11 +1635,8 @@ setMethod("toMassbank", "RmbSpectrum2", function(o, addAnnotation = getOption("R
 #' the file.
 #' 
 #' @usage exportMassbank(compiled, files, molfile)
-#' @param compiled Is ONE "compiled" entry, i.e. ONE compound with e.g. 14
-#' spectra, as returned from \code{\link{compileRecord}}.
-#' @param files A n-membered array (usually a return value from
-#' \code{lapply(\link{toMassbank})}), i.e. contains n plain-text arrays with
-#' MassBank records.
+#' @param compiled \code{RmbSpectraSet}
+#' the spectra of one compound for which files should be exported
 #' @param molfile A molfile from \code{\link{createMolfile}}
 #' @return No return value.
 #' @note An improvement would be to write the accession numbers into
@@ -1644,18 +1644,10 @@ setMethod("toMassbank", "RmbSpectrum2", function(o, addAnnotation = getOption("R
 #' wouldn't be needed here anymore. (The compound ID would have to go into
 #' \code{names(molfile)}, since it is also retrieved from \code{compiled}.)
 #' @author Michael Stravs
-#' @seealso \code{\link{createMolfile}}, \code{\link{compileRecord}},
-#' \code{\link{toMassbank}}, \code{\link{mbWorkflow}}
+#' @seealso \code{\link{createMolfile}}, \code{\link{toMassbank}},
+#' \code{\link{mbWorkflow}}
 #' @references MassBank record format:
 #' \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
-#' @examples
-#' \dontrun{
-#' 		compiled <- compileRecord(record, mbdata, refilteredRcSpecs)
-#' 		mbfiles <- toMassbank(compiled)
-#' 		molfile <- createMolfile(compiled[[1]][["CH$SMILES"]])
-#' 		exportMassbank(compiled, mbfiles, molfile)
-#' }
-#' 
 #' @export
 exportMassbank <- function(compiled, molfile = NULL)
 {
@@ -1715,15 +1707,10 @@ exportMassbank_moldata <- function(compiled, molfile, molDataFolder)
 #' their respective molfiles. The first compound name is linked to a mol-file with
 #' the compound ID (e.g. 2334.mol for ID 2334).
 #' 
-#' @param compiled A list of compiled spectra (in tree-format, as returned by \code{compileRecord}).
+#' @param compiled list of \code{RmbSpectraSet}
+#' compiled spectra for multiple compounds (one \code{RmbSpectraSet} each).
 #' @return No return value.
-#' @author Michael A. Stravs, Eawag <michael.stravs@@eawag.ch>
-#' @examples \dontrun{
-#' 		compiled <- compileRecord(record, mbdata, refilteredRcSpecs)
-#' 		# a list.tsv for only one record:
-#' 		clist <- list(compiled)
-#' 		makeMollist(clist)
-#' }
+#' @author Michael A. Stravs, Eawag <michael.stravs@eawag.ch>
 #' @export
 makeMollist <- function(compiled)
 {

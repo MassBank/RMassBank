@@ -638,8 +638,28 @@ findMsMsHRperxcms.direct <- function(fileName, cpdID, mode="pH", findPeaksArgs =
 	return(metaspec)
 }
 
-################################################################################
-## new
+#' Retrieve spectra from msp files
+#'
+#' This function is currently used to read msp files
+#' containing data that were already processed in order to
+#' convert the results to MassBank records.
+#'
+#' @param fileName vector of character-strings
+#' The msp files to be searched for spectra
+#' @param cpdIDs vector of integers
+#' The IDs of compounds in the compoundlist
+#' for which spectra should be retrieved
+#' @param mode character, default: "pH"
+#' The processing mode that was used to produce the spectrum.
+#' Should be one of
+#' "pH": ([M+H]+)
+#' "pNa": ([M+Na]+)
+#' "pM": ([M]+)
+#' "mH": ([M-H]-)
+#' or "mFA": ([M+FA]-)
+#' (see the \code{RMassBank} vignette)
+#' @return An \code{RmbSpectraSet} with integrated information from the msp files
+#' @export
 findMsMsHRperMsp <- function(fileName, cpdIDs, mode="pH"){
   # Find mz
   #mzLimits <- findMz(cpdIDs, mode)
@@ -700,7 +720,6 @@ findMsMsHRperMsp <- function(fileName, cpdIDs, mode="pH"){
 }
 
 #' @describeIn findMsMsHRperMsp A submethod of findMsMsHrperxcms that retrieves basic spectrum data
-#' @export
 findMsMsHRperMsp.direct <- function(fileName, cpdIDs, mode="pH") {
   
   #requireNamespace("CAMERA",quietly=TRUE)

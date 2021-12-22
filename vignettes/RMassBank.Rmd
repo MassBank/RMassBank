@@ -199,7 +199,7 @@ should then be edited. Important settings are:
     for the recalibration only. Careful: the default 1e4 for Orbitrap LTQ positive could 
     remove all peaks for TOF data and will remove too many peaks for Orbitrap LTQ 
     negative mode spectra!
-	+  `specOKLimit`: MS/MS must have at least one peak above this limit 
+	+  `specOkLimit`: MS/MS must have at least one peak above this limit 
     present to be processed. 
 	+  `dbeMinLimit`: The minimum allowable ring and double bond equivalent (DBE) 
     allowed for assigned formulas. Assumes maximum valences for elements with multiple 

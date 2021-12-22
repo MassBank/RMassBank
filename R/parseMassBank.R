@@ -4,18 +4,22 @@
 #'
 #' @aliases parseMassBank
 #' @usage parseMassBank(Files)
-#' @param Files A path to the plaintext-record that should be read
+#' @param Files array of character-strings
+#' Paths to the plaintext-records that should be read
 #' @return The \code{mbWorkspace} that the plaintext-record creates.
+#' All parsed information will be stored in the 'compiled_ok' slot.
 #' @seealso \code{\link{validate}}
 #' @author Erik Mueller
 #' @examples \dontrun{
-#' 		parseMassBank("filepath_to_records/RC00001.txt")
+#'		paths <- c("filepath_to_records/RC000001.txt",
+#'		           "filepath_to_records/RC000002.txt")
+#' 		mb <- parseMassBank(paths)
 #' }
 #' @export
 parseMassBank <- function(Files){
 	mb <- new("mbWorkspace")
 	mb@compiled_ok <- list()
-	i <- 1
+	for (i in seq_along(Files)) {
 		fileConnection <- file(Files[i])
 		record <- readLines(fileConnection)
 		close(fileConnection)
@@ -191,5 +195,6 @@ parseMassBank <- function(Files){
 		}
 		print(paste("Read",Files[i]))
 		flush.console()
+	}
 	return(mb)
 }
