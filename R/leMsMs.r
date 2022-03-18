@@ -637,39 +637,76 @@ analyzeMsMs.formula <- function(msmsPeaks, mode="pH", detail=FALSE, run="prelimi
   		return(child)
   	}
   
-  	limits <- to.limits.rcdk(parent_formula)
-	maximal.mass <- get.formula(parent_formula)@mass
+  	limits <- to.limits.rcdk(parent_formula, fix = TRUE)
+  	
+  	# 
+  	maximal.mass <- get.formula(parent_formula)@mass
   	
   	peakmatrix <- lapply(split(shot,shot$row), function(shot.row)  {
-  				# Circumvent bug in rcdk: correct the mass for the charge first, then calculate uncharged formulae
-  				# finally back-correct calculated masses for the charge
-  				mass <- shot.row[["mz"]]
-  				mass.calc <- mass + mode.charge * .emass
-				tolerance <- ppm(mass.calc, ppmlimit, p=TRUE)
-				if (mass.calc > maximal.mass + tolerance)
-  					return(t(c(row=shot.row[["row"]], intensity = shot.row[["intensity"]], mz=mass, formula=NA, mzCalc=NA)))
-				peakformula <- tryCatch(
+      
+  	  # Handling multiply charged precursors:
+  	  # For charge +-1, all fragments can only have charge +-1
+  	  # For charge +-2, fragments may either have charge 2 or 1.
+  	  # Therefore, generate candidate formulas for both versions.
+  	  # We haven't yet decided whether one should be preferred if both match.
+  	  
+  	  mz_ <- shot.row[["mz"]]
+  	  peakformula <- list()
+  	  
+  	  for(charge in seq(abs(mode.charge)) * sign(mode.charge)) {
+  	    
+  	  
+    		# To avoid rcdk issues:
+  	    # 1) Convert m/z to neutral mass
+  	    # 2) Generate formulae for the neutral mass
+  	    # 3) Convert formula calculated masses to corresponding m/z
+  	    #
+  	    # (1)
+    		mass.calc <- (mz_ * abs(charge)) + charge * .emass
+    		tolerance <- ppm(mass.calc, ppmlimit, p=TRUE) * abs(charge)
+    		
+    		log_debug("mz {mz_}, mass.calc {mass.calc}, charge {charge}, limits {limits}, tolerance {tolerance}, maximal mass {maximal.mass}")
+				if (mass.calc > maximal.mass + tolerance) {
+				  log_debug("skipping, theoretical mass too high")
+				  next
+				}
+  			# return(t(c(row=shot.row[["row"]], intensity = shot.row[["intensity"]], mz=mz_, formula=NA, mzCalc=NA, charge = NA)))
+    		
+      	# (2)
+				peakformula_charge <- tryCatch(
 				  suppressWarnings(generate.formula(mass.calc, tolerance,
 				                                    limits, charge=0)),
 				  error = function(e) list())
-				# was a formula found? If not, return empty result
-  				# ppm(mass, ppmlimit, p=TRUE),
-  				# limits, charge=1),
-  				#error= function(e) list())
-  			
-			if(length(peakformula)==0)
-  				return(t(c(row=shot.row[["row"]], intensity = shot.row[["intensity"]], mz=mass,
-  										formula=NA, mzCalc=NA)))
-  			else
-  			{
-  				return(t(sapply(peakformula, function(f)
-  										{
-  											mzCalc <- f@mass - mode.charge * .emass
-  											c(row=shot.row[["row"]], intensity = shot.row[["intensity"]], mz=mass,
-  													formula=f@string, 
-  													mzCalc=mzCalc)
-  										})))
-  			}
+				
+				# Push in the charge as attribute for every found formula
+				# (used below for calculating m/z)
+				peakformula_charge <- lapply(peakformula_charge, function(f) {
+				  attr(f, "charge") <- charge
+				  f
+				})
+				peakformula <- c(peakformula, peakformula_charge)
+
+  	  } # for (charge)
+  	  
+  	  
+  	  # (3)
+  	  if(length(peakformula) > 0)
+  	  {
+  	    return(t(sapply(peakformula, function(f)
+  	    {
+  	      charge <- attr(f, "charge")
+  	      mzCalc <- (f@mass - (charge * .emass))/ abs(charge)
+  	      c(row=shot.row[["row"]], intensity = shot.row[["intensity"]], mz=mz_,
+  	        formula = f@string, 
+  	        mzCalc = mzCalc,
+  	        charge = charge)
+  	    })))
+  	  } else {
+  	    return(t(c(row=shot.row[["row"]], intensity = shot.row[["intensity"]], mz=mz_,
+  	               formula=NA, mzCalc=NA, charge = NA)))
+  	  } 
+  	    
+  	  
   	})
   	
   	childPeaks <- as.data.frame(do.call(rbind, peakmatrix))

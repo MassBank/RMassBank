@@ -39,6 +39,7 @@ NULL
 #' @usage to.limits.rcdk(formula)
 #' @param formula A molecular formula in string or list representation
 #' (\code{"C6H6"} or \code{list(C=6,H=6)}).
+#' @param fix Fix the bug https://github.com/CDK-R/cdkr/issues/129 by inserting dummy element.
 #' @return An array in the form \code{c( c("C", "0", "12"), c("H", "0", "12"))}
 #' (for input of "C12H12").
 #' @author Michael Stravs
@@ -50,13 +51,21 @@ NULL
 #' to.limits.rcdk(add.formula("C6H12O6", "H"))
 #' 
 #' @export
-to.limits.rcdk <- function(formula)
+to.limits.rcdk <- function(formula, fix = FALSE)
 {
     if(!is.list(formula))
         formula <- formulastring.to.list(formula)
     elelist <- lapply(names(formula), function(element) {
                     return(c(element, 0, formula[[element]]))
                 })
+    if(fix & (length(elelist) == 1)) {
+      # we need to try at least two elements to make sure to add a new one
+      if("H" %in% names(formula)) {
+        elelist <- c(elelist, list(c("C", "0", "0")))
+      } else {
+        elelist <- c(elelist, list(c("H", "0", "0")))
+      }
+    }
     return(elelist)
 }
 
