@@ -592,12 +592,12 @@ gatherData <- function(id)
 		csid <- getCactus(inchikey_split, 'chemspider_id')
 	}
 	
-	##Get CompTox
-	comptox <- getCompTox(inchikey_split)
+	## ##Get CompTox
+	## comptox <- getCompTox(inchikey_split)
 	
-	if(is.null(comptox)){
-	  comptox <- NA
-	}
+	## if(is.null(comptox)){
+ 	  comptox <- NA
+	## }
 	
 	##Use CTS to retrieve information
 	CTSinfo <- getCtsRecord(inchikey_split)

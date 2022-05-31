@@ -407,48 +407,6 @@ getPcCHEBI <- function(query, from = "inchikey")
 	}
 }
 
-#' Retrieves DTXSID (if it exists) from EPA Comptox Dashboard
-#'
-#' @usage getCompTox(query)
-#' @param query The InChIKey of the compound.
-#' @return Returns the DTXSID.
-#' 
-#'
-#' @examples
-#'
-#' \dontrun{
-#' # getCompTox("MKXZASYAUGDDCJ-NJAFHUGGSA-N")
-#' }
-#'
-#' @author Adelene Lai <adelene.lai@uni.lu>
-#' @export
-
-getCompTox <- function(query) 
-{ 
-  baseURL <- "https://actorws.epa.gov/actorws/chemIdentifier/v01/resolve.json?identifier="
-  url <- paste0(baseURL,query)
-  errorvar <- 0
-  currEnvir <- environment()
-  tryCatch(
-    {#data <- getURL(URLencode(url), timeout=8)
-      res <- GET(URLencode(url))
-      data <- httr::content(res, type="text", encoding="UTF-8")
-    }, 
-    error=function(e){
-      currEnvir$errorvar <- 1 #TRUE?
-    }
-  )
-  
-  if(errorvar){  #if TRUE?
-    warning("EPA web service is currently offline")
-    return(NA)
-  }
-  
-  r <- fromJSON(data) #returns list
-  return(r$DataRow$dtxsid)
-
- }
-
 #' Retrieve the Chemspider ID for a given compound
 #' 
 #' Given an InChIKey, this function queries the chemspider web API to retrieve

@@ -84,7 +84,9 @@ msmsRead <- function(w, filetable = NULL, files = NULL, cpdids = NULL,
 		)
 		w@files <- tab[,"Files"]
 		cpdids <- tab[,"ID"]
-		mode <- tab[,"mode"]
+            if ("mode" %in% colnames(tab)) {
+                mode <- tab[,"mode"]
+            }
 	}
   
   ##Read the files and cpdids according to the definition
