@@ -38,7 +38,7 @@ env:
   run_covr: 'true'
   run_pkgdown: 'true'
   has_RUnit: 'false'
-  has_BiocCheck: 'false'
+  has_BiocCheck: 'true'
   cache-version: 'cache-v1'
 
 jobs:
