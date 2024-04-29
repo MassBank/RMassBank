@@ -1,9 +1,8 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7.9000
-pkgdown_sha: c354aa7e5ea1f9936692494c28c89e5bdd31fc68
+pandoc: 3.1.1
+pkgdown: 2.0.9.9000
+pkgdown_sha: 6aff5017725eeb6cfed34222d74ae87aa8d2c13e
 articles:
   RMassBank: RMassBank.html
   RMassBankNonstandard: RMassBankNonstandard.html
-  RMassBankXCMS: RMassBankXCMS.html
-last_built: 2023-05-04T10:42Z
+last_built: 2024-04-29T21:20Z
 
