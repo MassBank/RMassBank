@@ -18,7 +18,7 @@ either via the RMassBank compound list (see loadList) or via a mass."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RMassBank</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.15.1</span>
       </span>
     </div>
 
@@ -96,110 +96,110 @@ either via the RMassBank compound list (see <code><a href="loadList.html">loadLi
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>fileName</dt>
+    <dl><dt id="arg-filename">fileName<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>The file to open and search the MS2 spectrum in.</p></dd>
 
 
-<dt>msRaw</dt>
+<dt id="arg-msraw">msRaw<a class="anchor" aria-label="anchor" href="#arg-msraw"></a></dt>
 <dd><p>The opened raw file (mzR file handle) to search the MS2 spectrum in. Specify either this
 or <code>fileName</code>.</p></dd>
 
 
-<dt>cpdID</dt>
+<dt id="arg-cpdid">cpdID<a class="anchor" aria-label="anchor" href="#arg-cpdid"></a></dt>
 <dd><p>The compound ID in the compound list (see <code><a href="loadList.html">loadList</a></code>)
 to use for formula lookup. Note: In \codefindMsMsHR.mass, this is entirely optional and
 used only in case a warning must be displayed; compound lookup is done via mass only.</p></dd>
 
 
-<dt>mode</dt>
+<dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
 <dd><p>The processing mode (determines which ion/adduct is searched):
 <code>"pH", "pNa", "pM", "pNH4", "mH", "mM", "mFA"</code> for different ions 
 ([M+H]+, [M+Na]+, [M]+, [M+NH4]+, [M-H]-, [M]-, [M+FA]-).</p></dd>
 
 
-<dt>confirmMode</dt>
+<dt id="arg-confirmmode">confirmMode<a class="anchor" aria-label="anchor" href="#arg-confirmmode"></a></dt>
 <dd><p>Whether to use the highest-intensity precursor (=0), second-
 highest (=1), third-highest (=2)...</p></dd>
 
 
-<dt>useRtLimit</dt>
+<dt id="arg-usertlimit">useRtLimit<a class="anchor" aria-label="anchor" href="#arg-usertlimit"></a></dt>
 <dd><p>Whether to respect retention time limits from the compound list.</p></dd>
 
 
-<dt>ppmFine</dt>
+<dt id="arg-ppmfine">ppmFine<a class="anchor" aria-label="anchor" href="#arg-ppmfine"></a></dt>
 <dd><p>The limit in ppm to use for fine limit (see below) calculation.</p></dd>
 
 
-<dt>mzCoarse</dt>
+<dt id="arg-mzcoarse">mzCoarse<a class="anchor" aria-label="anchor" href="#arg-mzcoarse"></a></dt>
 <dd><p>The coarse limit to use for locating potential MS2 scans:
 this tolerance is used when finding scans with a suitable precursor
     ion value.</p></dd>
 
 
-<dt>fillPrecursorScan</dt>
+<dt id="arg-fillprecursorscan">fillPrecursorScan<a class="anchor" aria-label="anchor" href="#arg-fillprecursorscan"></a></dt>
 <dd><p>If <code>TRUE</code>, the precursor scan will be filled from MS1 data.
 To be used for data where the precursor scan is not stored in the raw data.</p></dd>
 
 
-<dt>rtMargin</dt>
+<dt id="arg-rtmargin">rtMargin<a class="anchor" aria-label="anchor" href="#arg-rtmargin"></a></dt>
 <dd><p>The retention time tolerance to use.</p></dd>
 
 
-<dt>deprofile</dt>
+<dt id="arg-deprofile">deprofile<a class="anchor" aria-label="anchor" href="#arg-deprofile"></a></dt>
 <dd><p>Whether deprofiling should take place, and what method should be
 used (cf. <code><a href="deprofile.html">deprofile</a></code>)</p></dd>
 
 
-<dt>headerCache</dt>
+<dt id="arg-headercache">headerCache<a class="anchor" aria-label="anchor" href="#arg-headercache"></a></dt>
 <dd><p>If present, the complete <code>mzR::header(msRaw)</code>. Passing
 this value is useful if spectra for multiple compounds should be 
 extracted from the same mzML file, since it avoids getting the data
 freshly from <code>msRaw</code> for every compound.</p></dd>
 
 
-<dt>peaksCache</dt>
+<dt id="arg-peakscache">peaksCache<a class="anchor" aria-label="anchor" href="#arg-peakscache"></a></dt>
 <dd><p>If present, the complete output of <code>mzR::peaks(msRaw)</code>. This speeds up the lookup
 if multiple compounds should be searched in the same file.</p></dd>
 
 
-<dt>enforcePolarity</dt>
+<dt id="arg-enforcepolarity">enforcePolarity<a class="anchor" aria-label="anchor" href="#arg-enforcepolarity"></a></dt>
 <dd><p>If TRUE, scans are filtered for the given `mode`'s polarity when
 finding the target spectrum.</p></dd>
 
 
-<dt>diaWindows</dt>
+<dt id="arg-diawindows">diaWindows<a class="anchor" aria-label="anchor" href="#arg-diawindows"></a></dt>
 <dd><p>A data frame with columns <code>precursorMz</code>, <code>mzMin</code>, <code>mzMax</code> which specifies the precursor and 
 window size of each window for DIA acquisition.</p></dd>
 
 
-<dt>mz</dt>
+<dt id="arg-mz">mz<a class="anchor" aria-label="anchor" href="#arg-mz"></a></dt>
 <dd><p>The mass to use for spectrum search.</p></dd>
 
 
-<dt>limit.coarse</dt>
+<dt id="arg-limit-coarse">limit.coarse<a class="anchor" aria-label="anchor" href="#arg-limit-coarse"></a></dt>
 <dd><p>Parameter in <code>findMsMsHR.mass</code> corresponding to <code>mzCoarse</code>.
 (The parameters are distinct to clearly conceptually distinguish findMsMsHR.mass
 (a standalone useful function) from the cpdID based functions (workflow functions).)</p></dd>
 
 
-<dt>limit.fine</dt>
+<dt id="arg-limit-fine">limit.fine<a class="anchor" aria-label="anchor" href="#arg-limit-fine"></a></dt>
 <dd><p>The fine limit to use for locating MS2 scans: this tolerance
 is used when locating an appropriate analyte peak in the MS1 precursor
 spectrum.</p></dd>
 
 
-<dt>rtLimits</dt>
+<dt id="arg-rtlimits">rtLimits<a class="anchor" aria-label="anchor" href="#arg-rtlimits"></a></dt>
 <dd><p><code>c(min, max)</code>: Minimum and maximum retention time to use
 when locating the MS2 scans.</p></dd>
 
 
-<dt>maxCount</dt>
+<dt id="arg-maxcount">maxCount<a class="anchor" aria-label="anchor" href="#arg-maxcount"></a></dt>
 <dd><p>The maximal number of spectra groups to return. One spectra group
 consists of all data-dependent scans from the same precursor whose precursor
 mass matches the specified search mass.</p></dd>
 
 
-<dt>polarity</dt>
+<dt id="arg-polarity">polarity<a class="anchor" aria-label="anchor" href="#arg-polarity"></a></dt>
 <dd><p>If set (for ?findMsMsHR.mass), scans are filtered for the given `mode`'s polarity when
 finding the target spectrum.</p></dd>
 
@@ -266,7 +266,7 @@ finding the target spectrum.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen.</p>
+  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen, Tobias Schulze.</p>
 </div>
 
 <div class="pkgdown">

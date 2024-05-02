@@ -21,7 +21,7 @@ MassBank record"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RMassBank</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.15.1</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ MassBank record</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>o</dt>
+    <dl><dt id="arg-o">o<a class="anchor" aria-label="anchor" href="#arg-o"></a></dt>
 <dd><p><code>RmbSpectraSet</code> or <code>RmbSpectrum2</code>
 The spectra (or single spectrum) should be taken from a compound after analysis (<code><a href="analyzeMsMs.html">analyzeMsMs</a></code>).
 Note that <b>peaks are not read from this
@@ -92,28 +92,28 @@ the global <code>additionalPeaks</code> dataframe; cf. <code><a href="addPeaks.h
 usage information.)</p></dd>
 
 
-<dt>...</dt>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>keyword arguments for intensity normalization and peak selection (see <code>normalize</code> and <code><a href="selectPeaks.html">selectPeaks</a></code>)</p></dd>
 
 
-<dt>cpd</dt>
+<dt id="arg-cpd">cpd<a class="anchor" aria-label="anchor" href="#arg-cpd"></a></dt>
 <dd><p><code>RmbSpectraSet</code> or missing
 In case o is an <code>RmbSpectrum2</code>, this represents the <code>RmbSpectraSet</code> it belongs to</p></dd>
 
 
-<dt>mbdata</dt>
+<dt id="arg-mbdata">mbdata<a class="anchor" aria-label="anchor" href="#arg-mbdata"></a></dt>
 <dd><p>list
 The information data block for the record header, as stored in
 <code>mbdata_relisted</code> after loading an infolist.</p></dd>
 
 
-<dt>analyticalInfo</dt>
+<dt id="arg-analyticalinfo">analyticalInfo<a class="anchor" aria-label="anchor" href="#arg-analyticalinfo"></a></dt>
 <dd><p>A list containing information for the `AC$` section of
 a MassBank record, with elements `ai, ac_lc, ac_ms` for general, LC and MS
 info respectively.</p></dd>
 
 
-<dt>additionalPeaks</dt>
+<dt id="arg-additionalpeaks">additionalPeaks<a class="anchor" aria-label="anchor" href="#arg-additionalpeaks"></a></dt>
 <dd><p>data.frame
 If present, a table with additional peaks to add into the spectra.
         As loaded with <code><a href="addPeaks.html">addPeaks</a></code>.</p></dd>
@@ -148,7 +148,7 @@ If present, a table with additional peaks to add into the spectra.
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen.</p>
+  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen, Tobias Schulze.</p>
 </div>
 
 <div class="pkgdown">

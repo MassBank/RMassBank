@@ -20,7 +20,7 @@ the parent ion peaks."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RMassBank</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.15.1</span>
       </span>
     </div>
 
@@ -83,42 +83,42 @@ the parent ion peaks.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>w</dt>
+    <dl><dt id="arg-w">w<a class="anchor" aria-label="anchor" href="#arg-w"></a></dt>
 <dd><p>For <code>makeRecalibration</code>: to perform the recalibration with. For <code>recalibrateSpectra</code>: 
 the <code>msmsWorkspace</code> which contains the recalibration curves (alternatively to specifying <code>rc, rc.ms1</code>).</p></dd>
 
 
-<dt>recalibrateBy</dt>
+<dt id="arg-recalibrateby">recalibrateBy<a class="anchor" aria-label="anchor" href="#arg-recalibrateby"></a></dt>
 <dd><p>Whether recalibration should be done by ppm ("ppm") or by m/z ("mz").</p></dd>
 
 
-<dt>recalibrateMS1</dt>
+<dt id="arg-recalibratems-">recalibrateMS1<a class="anchor" aria-label="anchor" href="#arg-recalibratems-"></a></dt>
 <dd><p>Whether MS1 spectra should be recalibrated separately ("separate"),
 together with MS2 ("common") or not at all ("none"). Usually taken from settings.</p></dd>
 
 
-<dt>recalibrator</dt>
+<dt id="arg-recalibrator">recalibrator<a class="anchor" aria-label="anchor" href="#arg-recalibrator"></a></dt>
 <dd><p>The recalibrator functions to be used.
 Refer to <code><a href="recalibrate.html">recalibrate</a></code> for details. Usually taken from settings.</p></dd>
 
 
-<dt>recalibrateMS1Window</dt>
+<dt id="arg-recalibratems-window">recalibrateMS1Window<a class="anchor" aria-label="anchor" href="#arg-recalibratems-window"></a></dt>
 <dd><p>Window width to look for MS1 peaks to recalibrate (in ppm).</p></dd>
 
 
-<dt>spectrum</dt>
+<dt id="arg-spectrum">spectrum<a class="anchor" aria-label="anchor" href="#arg-spectrum"></a></dt>
 <dd><p>For <code>recalibrateSingleSpec</code>:
 a <code>MSnbase</code> <code>Spectrum</code>-derived object, commonly a <code>RmbSpectrum2</code> for MS2 or <code>Spectrum1</code> for MS1.</p></dd>
 
 
-<dt>rawspec</dt>
+<dt id="arg-rawspec">rawspec<a class="anchor" aria-label="anchor" href="#arg-rawspec"></a></dt>
 <dd><p>For <code>recalibrateSpectra</code>:an <code>RmbSpectraSetList</code> of <code>RmbSpectraSet</code> objects
 , as the <code>w@spectra</code> slot from <code>msmsWorkspace</code> or any object returned by <code><a href="findMsMsHR.html">findMsMsHR</a></code>.
 If empty, no spectra are recalibrated, but the recalibration curve is
 returned.</p></dd>
 
 
-<dt>rc, rc.ms1</dt>
+<dt id="arg-rc-rc-ms-">rc, rc.ms1<a class="anchor" aria-label="anchor" href="#arg-rc-rc-ms-"></a></dt>
 <dd><p>The recalibration curves to be used in the recalibration.</p></dd>
 
 </dl></div>
@@ -175,7 +175,7 @@ This also ensures a consistent recalibration across all spectra of the same batc
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen.</p>
+  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen, Tobias Schulze.</p>
 </div>
 
 <div class="pkgdown">

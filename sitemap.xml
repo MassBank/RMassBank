@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>/articles/RMassBank.html</loc>
   </url>
   <url>
@@ -172,6 +175,9 @@
     <loc>/reference/formulastring.to.list.html</loc>
   </url>
   <url>
+    <loc>/reference/gatherCCTE.html</loc>
+  </url>
+  <url>
     <loc>/reference/gatherData.html</loc>
   </url>
   <url>
@@ -187,6 +193,9 @@
     <loc>/reference/getAnalyticalInfo.html</loc>
   </url>
   <url>
+    <loc>/reference/getCASRN.html</loc>
+  </url>
+  <url>
     <loc>/reference/getCSID.html</loc>
   </url>
   <url>
@@ -199,6 +208,15 @@
     <loc>/reference/getCtsRecord.html</loc>
   </url>
   <url>
+    <loc>/reference/getDTXCID.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getDTXSID.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getDTXSMILES.html</loc>
+  </url>
+  <url>
     <loc>/reference/getData.html</loc>
   </url>
   <url>
@@ -209,6 +227,9 @@
   </url>
   <url>
     <loc>/reference/getPcId.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getPrefName.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>

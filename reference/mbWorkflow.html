@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RMassBank</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.15.1</span>
       </span>
     </div>
 
@@ -68,26 +68,26 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>mb</dt>
+    <dl><dt id="arg-mb">mb<a class="anchor" aria-label="anchor" href="#arg-mb"></a></dt>
 <dd><p>The <code>mbWorkspace</code> to work in.</p></dd>
 
 
-<dt>steps</dt>
+<dt id="arg-steps">steps<a class="anchor" aria-label="anchor" href="#arg-steps"></a></dt>
 <dd><p>Which steps in the workflow to perform.</p></dd>
 
 
-<dt>infolist_path</dt>
+<dt id="arg-infolist-path">infolist_path<a class="anchor" aria-label="anchor" href="#arg-infolist-path"></a></dt>
 <dd><p>A path where to store newly downloaded compound informations,
 which should then be manually inspected.</p></dd>
 
 
-<dt>gatherData</dt>
+<dt id="arg-gatherdata">gatherData<a class="anchor" aria-label="anchor" href="#arg-gatherdata"></a></dt>
 <dd><p>A variable denoting whether to retrieve information using several online databases <code>gatherData= "online"</code>
 or to use the local babel installation <code>gatherData= "babel"</code>. Note that babel is used either way, if a directory is given 
 in the settings. This setting will be ignored if retrieval is set to "standard"</p></dd>
 
 
-<dt>filter</dt>
+<dt id="arg-filter">filter<a class="anchor" aria-label="anchor" href="#arg-filter"></a></dt>
 <dd><p>If <code>TRUE</code>, the peaks will be filtered according to the standard processing workflow in RMassBank - 
 only the best formula for a peak is retained, and only peaks passing multiplicity filtering are retained. If FALSE, it is assumed
 that the user has already done filtering, and all peaks in the spectrum should be printed in the record (with or without formula.)</p></dd>
@@ -148,7 +148,7 @@ that the user has already done filtering, and all peaks in the spectrum should b
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen.</p>
+  <p></p><p>Developed by RMassBank at Eawag, Michael A. Stravs, Emma L. Schymanski, Steffen Neumann, Erik Muller, Paul Stahlhofen, Tobias Schulze.</p>
 </div>
 
 <div class="pkgdown">
