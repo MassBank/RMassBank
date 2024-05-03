@@ -2355,7 +2355,7 @@ recalibrate.linear <- function(rcdata)
 #' 
 #' @author Michele Stravs, Eawag <stravsmi@@eawag.ch>
 #' @export
-progressBarHook <- function(object = NULL, value = 0, min = 0, max = 100, close = FALSE)
+progressBarHook <- function(object = NULL, value = NULL, min = 0, max = 100, close = FALSE)
 {
 	if(is.null(object))
 	{
@@ -2363,6 +2363,10 @@ progressBarHook <- function(object = NULL, value = 0, min = 0, max = 100, close 
 	}
 	if(close)
 		close(object)
+  if(is.null(value))
+  {
+    return(getTxtProgressBar(object))
+  }
 	else
 	{
 		setTxtProgressBar(object, value)
