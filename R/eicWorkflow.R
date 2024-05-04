@@ -54,7 +54,7 @@ eicWorkflow <- function(
   if(2 %in% steps)
   {
     
-    rmb_log_info("eicWorkflow: Step 3. Acquire fragment EIC from files")
+    rmb_log_info("eicWorkflow: Step 2. Acquire fragment EIC from files")
     spectra_count <- length(w@spectra)
     pb <- do.call(progressbar, 
                   list(object=NULL, value=0, min=0, max=spectra_count))
@@ -76,7 +76,7 @@ eicWorkflow <- function(
   if(3 %in% steps)
   {
     
-    rmb_log_info("eicWorkflow: Step 2. Calculate fragment EIC correlations")
+    rmb_log_info("eicWorkflow: Step 3. Calculate fragment EIC correlations")
     spectra_count <- length(w@spectra)
     pb <- do.call(progressbar, 
                   list(object=NULL, value=0, min=0, max=spectra_count))
@@ -87,6 +87,13 @@ eicWorkflow <- function(
       ) |>
       as("SimpleList")
     do.call(progressbar, list(object=pb, close=TRUE))
+  }
+  
+  # Step 3: calculate dot score and correlations
+  if(4 %in% steps)
+  {
+    rmb_log_info("eicWorkflow: Step 4. Calculate correlation thresholds")
+    w <- w |>  computeEicThreshold()
   }
   
   
@@ -275,4 +282,41 @@ correlateEics.RmbSpectrum2 <- function(sp, cpd) {
     property(sp, "eicScoreDot") <- as.vector(eicScoreDot)
 
     sp
+}
+
+
+.getSetpoint <- function(ag, scoreCol, beta) {
+  
+  fsc <- fBeta(beta)
+  setpoint <- roc(ag$good, ag[[scoreCol]], levels=c("FALSE", "TRUE"), direction="<")
+  plot(setpoint)
+  fscore <- fsc(setpoint$sensitivities, setpoint$specificities)
+  plot(fscore)
+  maxFscore <- which.max(fscore)
+  return(setpoint$thresholds[maxFscore])
+}
+
+computeEicThreshold <- function(w, beta = 1.5) {
+  
+  # aggregate and keep the best result for every peak
+  ag <- RMassBank::aggregateSpectra(w)
+  ag <- ag |> 
+    dplyr::group_by(cpdID, scan, mzFound) |> 
+    dplyr::arrange(!good, abs(dppm)) |> 
+    dplyr::slice(1) 
+  
+  # for every formula, keep the best correlation of all children;
+  # when no formula present, keep the peak alone
+  ag$formula_ <- factor(ag$formula) |> as.numeric()
+  ag$formula_[is.na(ag$formula_)] <- -seq_along(ag$formula_[is.na(ag$formula_)])
+  
+  ag$eicScoreCor0 <- ag$eicScoreCor |> tidyr::replace_na(0)
+  ag$eicScoreDot0 <- ag$eicScoreDot |> tidyr::replace_na(0)
+  
+  score_cols <- c("eicScoreCor", "eicScoreDot", "eicScoreCor0", "eicScoreDot0")
+  setpoints <- purrr::map(score_cols, \(col) .getSetpoint(ag, col, beta))
+  names(setpoints) <- score_cols
+  
+  attr(w, "eicScoreFilter") <- setpoints
+  w
 }
