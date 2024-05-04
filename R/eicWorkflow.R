@@ -1,3 +1,27 @@
+# Peak EIC correlation while filtering out zero rows
+.eicScoreCor <- function(prec, eic) {
+  eicSum <- colSums(abs(eic))
+  .eicScore <- cor(prec, eic[,eicSum > 0,drop=FALSE])
+  eicScore <- rep(NA_real_, ncol(eic))
+  eicScore[eicSum > 0] <- .eicScore
+  eicScore
+} 
+
+# Peak EIC dot product score
+.eicScoreDot <- function(prec, eic) {
+  normX <- sqrt(sum(prec^2))
+  normY <- sqrt(colSums(eic^2))
+  dot <- t(prec) %*% eic
+  score <- dot / (normX * normY)
+  score[normY == 0] <- NA
+  score
+}
+
+
+f1 <- function(sens, spec)
+  2 * sens * spec / (sens + spec)
+fBeta <- function(beta) function(sens, spec)
+  (1 + beta^2) * (sens * spec) / ((spec * beta^2) + sens)
 
 
 eicWorkflow <- function(
@@ -47,6 +71,24 @@ eicWorkflow <- function(
       as("SimpleList")
     do.call(progressbar, list(object=pb, close=TRUE))
   }
+  
+  # Step 3: calculate dot score and correlations
+  if(3 %in% steps)
+  {
+    
+    rmb_log_info("eicWorkflow: Step 2. Calculate fragment EIC correlations")
+    spectra_count <- length(w@spectra)
+    pb <- do.call(progressbar, 
+                  list(object=NULL, value=0, min=0, max=spectra_count))
+    
+    w@spectra <- w@spectra |> as.list() |>
+      purrr::map(correlateCpdFragmentEics, 
+                  progressbar = list(hook=progressbar, pb=pb)
+      ) |>
+      as("SimpleList")
+    do.call(progressbar, list(object=pb, close=TRUE))
+  }
+  
   
   w
   
@@ -126,6 +168,7 @@ extractCpdFragmentEics <- function(cpd, file, mode,
 extractSpectrumFragmentEics <- function(
     sp, header, peaksCache,
     ppm, precursor_dmz, rt_window) {
+  
   hSub <- header |> dplyr::filter(
     abs(precursorMZ - sp@precursorMz) < precursor_dmz,
     msLevel == sp@msLevel,
@@ -154,4 +197,70 @@ extractSpectrumFragmentEics <- function(
   
   attr(sp, "eics") <- eics
   return(sp)
+}
+
+correlateCpdFragmentEics <- function(cpd,
+                                     progressbar = NULL) {
+  # correlate EICs with precursor EIC
+  # note: REMOVE the scan itself and the precursor itself, to zero out the one-point correlations!
+
+  if(length(cpd@children) == 0)
+    return(cpd)
+  
+  if(!cpd@found)
+    return(cpd)
+    
+  cpd@children <- cpd@children |>
+    as.list() |>
+    purrr::map(correlateSpectrumFragmentEics,
+               cpd = cpd) |>
+    as("SimpleList")
+  
+  if(!is.null(progressbar)) {
+    value <- do.call(progressbar$hook, list(object=progressbar$pb, value=NULL))
+    do.call(progressbar$hook, list(object=progressbar$pb, value=value+1))
+  }
+  
+      
+  cpd
+}
+
+correlateSpectrumFragmentEics <- function(sp, cpd) {
+
+    eic <- attr(sp, "eic") |>
+      dplyr::bind_rows(.id = "mzIndex")
+    if(nrow(eic) == 0)
+    {
+      sp <- RMassBank::addProperty(sp, "eicScoreCor", type = "numeric", NA)
+      sp <- RMassBank::addProperty(sp, "eicScoreDot", type = "numeric", NA)
+      return(sp)
+    }
+    
+    eic <- eic |>
+      dplyr::mutate(mzIndex = as.numeric(as.character(mzIndex))) |>
+      dplyr::select(-mz) |>
+      tidyr::pivot_wider(names_from = c("mzIndex"), values_from = "intensity", names_prefix = "mz_")
+      
+    eicPrecursor <- attr(cpd, "eic")
+    eic <- eic |> dplyr::left_join(
+      eicPrecursor |> dplyr::rename(precursorScan = scan),
+      by="precursorScan"
+      )
+      
+      
+    # filter out "this scan"
+    eic <- eic |> dplyr::filter(precursorScan != sp@precScanNum)
+    
+    eicPrecursor <- eic[,"intensity"] |> as.matrix()
+    eic <- eic |> dplyr::select(starts_with("mz_")) |> as.matrix()
+    
+    eicScoreCor <- .eicScoreCor(eicPrecursor, eic)
+    eicScoreDot <- .eicScoreDot(eicPrecursor, eic)
+      
+    sp <- RMassBank::addProperty(sp, "eicScoreCor", type = "numeric", NA)
+    property(sp, "eicScoreCor") <- as.vector(eicScoreCor)
+    sp <- RMassBank::addProperty(sp, "eicScoreDot", type = "numeric", NA)
+    property(sp, "eicScoreDot") <- as.vector(eicScoreDot)
+
+    sp
 }
