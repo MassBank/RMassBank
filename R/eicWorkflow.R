@@ -320,3 +320,68 @@ computeEicThreshold <- function(w, beta = 1.5) {
   attr(w, "eicScoreFilter") <- setpoints
   w
 }
+
+autoReview <- function (x, ...) {
+  UseMethod("autoReview", x)
+}
+
+autoReview.RmbSpectraSet <- function(cpd, ...) {
+  cpd@children <- cpd@children |>
+    as.list() |>
+    purrr::map(autoReview, ..., cpd=cpd) |>
+    as("SimpleList")
+  cpd
+}
+
+autoReview.RmbSpectrum2 <- function(sp, cpd, specOkLimit) {
+  
+  d <- getData(sp)
+  mx <- max(d$intensity, 0, na.rm = TRUE)
+  sp@ok <- sp@ok & (mx > specOkLimit)
+  sp
+}
+
+
+autoReview.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
+  
+  specOkLimit <- as.numeric(settings$filterSettings$specOkLimit)
+                            
+  not_empty <- w@spectra |> 
+    as.list() |> 
+    purrr::map_lgl( ~ length(.x@children) > 0)
+  
+  glue::glue("{w@files[!not_empty]}: removing empty compound") |>
+    purrr::walk(rmb_log_info)
+  
+  w@spectra <- w@spectra[not_empty]
+  w@files <- w@files[not_empty]
+  
+  # Apply the specified specOK cutoff to reduce excessive work for nothing
+  w@spectra <- w@spectra |>
+    as.list() |>
+    purrr::map(autoReview, specOkLimit = specOkLimit) |>
+    as("SimpleList")
+  
+  # Check to exclude 0-spectra-found cpds
+  w@spectra <- w@spectra |>
+    as.list() |>
+    purrr::map(function(cpd) {
+    n_ok <- cpd@children |>
+      as.list() |>
+      purrr::map_lgl(~ isTRUE(.x@ok)) |>
+      sum()
+    cpd@found <- n_ok > 0
+    cpd
+    }) |>
+    as("SimpleList")
+  
+  not_problematic <- w@spectra |> as.list() |>
+    purrr::map_lgl(function(cpd) isTRUE(cpd@found))
+  glue::glue("{w@files[!not_problematic]}: removing problematic compound") |>
+    purrr::walk(rmb_log_info)
+  w@spectra <- w@spectra[not_problematic]
+  w@files <- w@files[not_problematic]
+  
+  w
+}
+
