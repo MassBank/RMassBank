@@ -41,7 +41,7 @@ eicWorkflow <- function(
     
     w@spectra <- w@spectra |> as.list() |>
       purrr::map2(w@files, 
-                  extractCpdParentEic, 
+                  extractParentEic, 
                   mode=mode, 
                   ppm=settings$findMsMsRawSettings$ppmFine,
                   progressbar = list(hook=progressbar, pb=pb)
@@ -54,14 +54,14 @@ eicWorkflow <- function(
   if(2 %in% steps)
   {
     
-    rmb_log_info("eicWorkflow: Step 2. Acquire fragment EIC from files")
+    rmb_log_info("eicWorkflow: Step 3. Acquire fragment EIC from files")
     spectra_count <- length(w@spectra)
     pb <- do.call(progressbar, 
                   list(object=NULL, value=0, min=0, max=spectra_count))
     
     w@spectra <- w@spectra |> as.list() |>
       purrr::map2(w@files, 
-                  extractCpdFragmentEics, 
+                  extractFragmentEics, 
                   mode=mode, 
                   ppm=settings$findMsMsRawSettings$ppmFine,
                   precursor_dmz = settings$findMsMsRawSettings$mzCoarse,
@@ -82,7 +82,7 @@ eicWorkflow <- function(
                   list(object=NULL, value=0, min=0, max=spectra_count))
     
     w@spectra <- w@spectra |> as.list() |>
-      purrr::map(correlateCpdFragmentEics, 
+      purrr::map(correlateEics, 
                   progressbar = list(hook=progressbar, pb=pb)
       ) |>
       as("SimpleList")
@@ -95,7 +95,7 @@ eicWorkflow <- function(
 }
 
 
-extractCpdParentEic <- function(cpd, file, mode, ppm, progressbar = NULL) {
+extractParentEic <- function(cpd, file, mode, ppm, progressbar = NULL) {
   
   d <- mzR::openMSfile(file)
   h <- mzR::header(d)
@@ -128,7 +128,15 @@ extractCpdParentEic <- function(cpd, file, mode, ppm, progressbar = NULL) {
   return(headerData)
 }
 
-extractCpdFragmentEics <- function(cpd, file, mode, 
+
+
+
+extractFragmentEics <- function (x, ...) {
+  UseMethod("extractFragmentEics", x)
+}
+
+
+extractFragmentEics.RmbSpectraSet <- function(cpd, file, mode, 
                                    ppm, precursor_dmz, rt_window,
                                    progressbar = NULL) {
   
@@ -149,7 +157,7 @@ extractCpdFragmentEics <- function(cpd, file, mode,
   
   cpd@children <- cpd@children |>
     as.list() |>
-    purrr::map(extractSpectrumFragmentEics,
+    purrr::map(extractFragmentEics,
         header = h, peaksCache = p,
         ppm=ppm, precursor_dmz=precursor_dmz, rt_window=rt_window * 60) |>
     as("SimpleList")
@@ -165,7 +173,7 @@ extractCpdFragmentEics <- function(cpd, file, mode,
   return(cpd)
 }
 
-extractSpectrumFragmentEics <- function(
+extractFragmentEics.RmbSpectrum2 <- function(
     sp, header, peaksCache,
     ppm, precursor_dmz, rt_window) {
   
@@ -199,7 +207,12 @@ extractSpectrumFragmentEics <- function(
   return(sp)
 }
 
-correlateCpdFragmentEics <- function(cpd,
+
+correlateEics <- function (x, ...) {
+  UseMethod("correlateEics", x)
+}
+
+correlateEics.RmbSpectraSet <- function(cpd,
                                      progressbar = NULL) {
   # correlate EICs with precursor EIC
   # note: REMOVE the scan itself and the precursor itself, to zero out the one-point correlations!
@@ -212,8 +225,7 @@ correlateCpdFragmentEics <- function(cpd,
     
   cpd@children <- cpd@children |>
     as.list() |>
-    purrr::map(correlateSpectrumFragmentEics,
-               cpd = cpd) |>
+    purrr::map(correlateEics, cpd = cpd) |>
     as("SimpleList")
   
   if(!is.null(progressbar)) {
@@ -225,7 +237,7 @@ correlateCpdFragmentEics <- function(cpd,
   cpd
 }
 
-correlateSpectrumFragmentEics <- function(sp, cpd) {
+correlateEics.RmbSpectrum2 <- function(sp, cpd) {
 
     eic <- attr(sp, "eic") |>
       dplyr::bind_rows(.id = "mzIndex")
