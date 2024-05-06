@@ -385,3 +385,71 @@ autoReview.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
   w
 }
 
+
+loadReview <- function(w, 
+                       from = NULL,
+                       cutoffs = NULL,
+                       cpds = NULL,
+                       spectra = NULL,
+                       settings = getOption("RMassBank")
+) {
+  
+  if(!is.null(settings$eicCorrMetric))
+    metric <- settings$eicCorrMetric
+  else {
+    rmb_log_warn("Correlation metric not specified in settings, using eicScoreCor")
+    metric <- "eicScoreCor"
+  }
+    
+  
+  if(is.null(from) & any(is.null(cutoff, cpds, spectra)))
+    stop("Either 'from' or all three source files 'cutoffs, cpds, spectra' need to be specified")
+  if(!is.null(from) & any(!is.null(cutoff, cpds, spectra)))
+    stop("Only either 'from' or all three source files 'cutoffs, cpds, spectra' may be specified")
+  if(!is.null(from)) {
+    cutoff <- glue::glue("{from}_score_cutoff.csv")
+    cpds <- glue::glue("{from}_cpds_ok.csv")
+    spectra <- glue::glue("{from}_spec_ok.csv")
+  }
+  if(!is.numeric(cutoff))
+    cutoff <- read_file(cutoff) %>% as.numeric()
+  if(!is.data.frame(cpds))
+    cpds <- readr::read_csv(cpds)
+  if(!is.data.frame(spectra))
+    spectra <- readr::read_csv(spectra)
+  specOk <- spectra
+  cpdOk <- cpds
+  
+  # Inject review data into compounds,
+  # then select and deselect spectra based on the choices from the review files
+  for(i in seq_along(w@spectra)) {
+    attr(w@spectra[[i]], "specOK") <- specOk %>% dplyr::filter(cpd == i)
+    attr(w@spectra[[i]], "threshold") <- cpdOk$threshold[[i]]
+  }
+  w@spectra <- w@spectra[cpdOk$ok]
+  w@files <- w@files[cpdOk$ok]
+  
+  # Apply specOk after applying cpdOk
+  w@spectra <- w@spectra |>
+    as.list() |>
+    purrr::map(function(cpd) {
+      specOK <- attr(cpd, "specOK")
+      assert_that(nrow(specOK) == length(cpd@children))
+      for(i in seq_along(cpd@children)) {
+        cpd@children[[i]]@ok <- specOK$ok[[i]]
+        attr(cpd@children[[i]], "threshold") <- specOK$threshold[[i]]
+      }
+      cpd
+    }) |>
+    as("SimpleList")
+  
+  # Warn if for whatever reason the cutoff couldn't be read
+  if(!is.na(cutoff)) {
+    eicScoreLimit <- cutoff
+  } else {
+    rmb_log_warn("score cutoff could not be read from review data, using calculated default")
+    eicScoreLimit <- attr(w, "eicScoreFilter")[[metric]]
+  }
+  attr(w, "eicScoreLimit") <- eicScoreLimit
+  w
+}
