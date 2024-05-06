@@ -453,3 +453,85 @@ loadReview <- function(w,
   attr(w, "eicScoreLimit") <- eicScoreLimit
   w
 }
+
+
+
+eicCorrFilter <- function (x, ...) {
+  UseMethod("eicCorrFilter", x)
+}
+
+eicCorrFilter.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
+  
+  if(!is.null(settings$eicCorrMetric))
+    metric <- settings$eicCorrMetric
+  else {
+    rmb_log_warn("Correlation metric not specified in settings, using eicScoreCor")
+    metric <- "eicScoreCor"
+  }
+  
+  if(is.null(attr(w, "eicScoreLimit"))) {
+    # this is info not warn, because reviewing by hand is not mandatory part
+    # of the process; reviewing and EIC filtering are distinct processes
+    eicScoreLimit <- attr(w, "eicScoreFilter")[[metric]]
+    rmb_log_info(glue::glue(
+      "No review was applied, using calculated correlation cutoff {eicScoreLimit}"
+    ))
+  } else {
+    eicScoreLimit <- attr(w, "eicScoreLimit")
+    rmb_log_info(glue::glue(
+      "No review was applied, using calculated correlation cutoff {eicScoreLimit}"
+    ))
+  }
+  
+  w@spectra <- w@spectra |>
+    as.list() |>
+    purrr::map(eicCorrFilter, metric=metric, eicScoreLimit=eicScoreLimit) |>
+    as("SimpleList")
+  w
+}
+
+eicCorrFilter.RmbSpectraSet <- function(cpd, ...) {
+  
+  if(!cpd@found)
+    return(cpd)
+  cpd@children <- cpd@children |>
+    as.list() |>
+    purrr::map(eicCorrFilter, cpd=cpd, ...) |>
+    as("SimpleList")
+  cpd
+}
+
+eicCorrFilter.RmbSpectrum2 <- function(sp, cpd, metric, eicScoreLimit) {
+  
+  if(!sp@ok)
+    return(sp)
+  # find the valid threshold for this spectrum:
+  # can be the global, compound-specific or spectrum-specific threshold
+  # Note: the attr() values are 
+  # * NULL if no review was applied
+  # * NA if the value for this compound/spectrum was not overridden (the most common case)
+  # * not NA if a specific value per compound / spectrum was set.
+  # eicScoreLimit is always set and comes either from the automatic estimation
+  # or from the review data.
+  thresholds <- c(
+    eicScoreLimit,
+    attr(cpd, "threshold"),
+    attr(sp, "threshold")
+  )
+  threshold <- tail(thresholds[!is.na(thresholds)], 1)
+  
+  d <- getData(sp)
+  d <- d |>
+    dplyr::group_by(mz) |>
+    dplyr::arrange(!good, desc(formulaMultiplicity), abs(dppm)) |>
+    dplyr::slice(1)
+  d <- d |>
+    dplyr::mutate(
+      good_ = good,
+      good = (.data[[metric]] > threshold) & !satellite & !low
+    ) |> dplyr::filter(good)
+  sp <- setData(sp, as.data.frame(d))
+  sp
+}
+
+
