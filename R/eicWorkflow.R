@@ -23,7 +23,7 @@ f1 <- function(sens, spec)
 fBeta <- function(beta) function(sens, spec)
   (1 + beta^2) * (sens * spec) / ((spec * beta^2) + sens)
 
-
+#' @export
 eicWorkflow <- function(
     w, mode="pH", steps=c(1:8),
     settings = getOption("RMassBank"),
@@ -89,19 +89,26 @@ eicWorkflow <- function(
     do.call(progressbar, list(object=pb, close=TRUE))
   }
   
-  # Step 3: calculate dot score and correlations
+  # Step 3: calculate correlation thresholds
   if(4 %in% steps)
   {
     rmb_log_info("eicWorkflow: Step 4. Calculate correlation thresholds")
-    w <- w |>  computeEicThreshold()
+    w <- w |>  computeEicThreshold(beta = settings$eicCorrelationBeta)
   }
   
+  # Step 2: acquire EIC for fragments from files
+  if(5 %in% steps)
+  {
+    
+    rmb_log_info("eicWorkflow: Step 5. Apply filtering by EIC correlation")
+    w <- w |> eicCorrFilter(settings = settings)
+  }
   
   w
   
 }
 
-
+#' @export
 extractParentEic <- function(cpd, file, mode, ppm, progressbar = NULL) {
   
   d <- mzR::openMSfile(file)
@@ -137,12 +144,12 @@ extractParentEic <- function(cpd, file, mode, ppm, progressbar = NULL) {
 
 
 
-
+#' @export
 extractFragmentEics <- function (x, ...) {
   UseMethod("extractFragmentEics", x)
 }
 
-
+#' @export
 extractFragmentEics.RmbSpectraSet <- function(cpd, file, mode, 
                                    ppm, precursor_dmz, rt_window,
                                    progressbar = NULL) {
@@ -180,6 +187,7 @@ extractFragmentEics.RmbSpectraSet <- function(cpd, file, mode,
   return(cpd)
 }
 
+#' @export
 extractFragmentEics.RmbSpectrum2 <- function(
     sp, header, peaksCache,
     ppm, precursor_dmz, rt_window) {
@@ -214,11 +222,12 @@ extractFragmentEics.RmbSpectrum2 <- function(
   return(sp)
 }
 
-
+#' @export
 correlateEics <- function (x, ...) {
   UseMethod("correlateEics", x)
 }
 
+#' @export
 correlateEics.RmbSpectraSet <- function(cpd,
                                      progressbar = NULL) {
   # correlate EICs with precursor EIC
@@ -244,6 +253,7 @@ correlateEics.RmbSpectraSet <- function(cpd,
   cpd
 }
 
+#' @export
 correlateEics.RmbSpectrum2 <- function(sp, cpd) {
 
     eic <- attr(sp, "eic") |>
@@ -288,7 +298,7 @@ correlateEics.RmbSpectrum2 <- function(sp, cpd) {
 .getSetpoint <- function(ag, scoreCol, beta) {
   
   fsc <- fBeta(beta)
-  setpoint <- roc(ag$good, ag[[scoreCol]], levels=c("FALSE", "TRUE"), direction="<")
+  setpoint <- pROC::roc(ag$good, ag[[scoreCol]], levels=c("FALSE", "TRUE"), direction="<")
   plot(setpoint)
   fscore <- fsc(setpoint$sensitivities, setpoint$specificities)
   plot(fscore)
@@ -296,8 +306,13 @@ correlateEics.RmbSpectrum2 <- function(sp, cpd) {
   return(setpoint$thresholds[maxFscore])
 }
 
+#' @export
 computeEicThreshold <- function(w, beta = 1.5) {
   
+  if(is.null(beta)) {
+    rmb_log_warn("No beta for EIC threshold specified, using beta=1.5")
+    beta <- 1.5
+  }
   # aggregate and keep the best result for every peak
   ag <- RMassBank::aggregateSpectra(w)
   ag <- ag |> 
@@ -321,10 +336,12 @@ computeEicThreshold <- function(w, beta = 1.5) {
   w
 }
 
+#' @export
 autoReview <- function (x, ...) {
   UseMethod("autoReview", x)
 }
 
+#' @export
 autoReview.RmbSpectraSet <- function(cpd, ...) {
   cpd@children <- cpd@children |>
     as.list() |>
@@ -332,7 +349,7 @@ autoReview.RmbSpectraSet <- function(cpd, ...) {
     as("SimpleList")
   cpd
 }
-
+#' @export
 autoReview.RmbSpectrum2 <- function(sp, cpd, specOkLimit) {
   
   d <- getData(sp)
@@ -341,7 +358,7 @@ autoReview.RmbSpectrum2 <- function(sp, cpd, specOkLimit) {
   sp
 }
 
-
+#' @export
 autoReview.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
   
   specOkLimit <- as.numeric(settings$filterSettings$specOkLimit)
@@ -385,7 +402,7 @@ autoReview.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
   w
 }
 
-
+#' @export
 loadReview <- function(w, 
                        from = NULL,
                        cutoffs = NULL,
@@ -455,11 +472,12 @@ loadReview <- function(w,
 }
 
 
-
+#' @export
 eicCorrFilter <- function (x, ...) {
   UseMethod("eicCorrFilter", x)
 }
 
+#' @export
 eicCorrFilter.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
   
   if(!is.null(settings$eicCorrMetric))
@@ -490,6 +508,7 @@ eicCorrFilter.msmsWorkspace <- function(w, settings = getOption("RMassBank")) {
   w
 }
 
+#' @export
 eicCorrFilter.RmbSpectraSet <- function(cpd, ...) {
   
   if(!cpd@found)
@@ -501,6 +520,7 @@ eicCorrFilter.RmbSpectraSet <- function(cpd, ...) {
   cpd
 }
 
+#' @export
 eicCorrFilter.RmbSpectrum2 <- function(sp, cpd, metric, eicScoreLimit) {
   
   if(!sp@ok)
