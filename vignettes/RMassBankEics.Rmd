@@ -1,0 +1,183 @@
+---
+title: "RMassBank: eicWorkflow"
+author: "Michael Stravs"
+output:
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{RMassBank: The workflow by example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteKeywords{Mass Spectrometry, MS, Metabolomics, Bioinformatics}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{RMassBank, RMassBankData, BiocStyle}
+  %\VignettePackage{RMassBank}
+---
+```{r echo=FALSE}
+options(width=74)
+```
+# Introduction
+
+The `eicWorkflow` is an enhancement to the RMassBank data processing workflow,
+which uses correlation of parent and fragment EICs as an additional quality criterion.
+It requires data where MS2 are acquired in a targeted way over a retention time window,
+so that MS2 data is acquired over the entire chromatographic compound peak of the 
+precursor and can be correlated with the MS1 EIC.
+
+It can be used 
+
+*RMassBank* is a two-part computational mass spectrometry workflow:
+
+*  In the first step, MSMS spectra of compounds are extracted from raw LC-MS data files, 
+      the MSMS spectra are recalibrated using assigned fragment formulas, and effectively 
+      denoised by using only annotated peaks (plus peaks which can be manually added.)
+*  In the second step, the processed, recalibrated, cleaned data is prepared for 
+      submission to a MassBank database. Compounds are first automatically annotated using 
+      information from the Chemical Translation Service (CTS). After manually checking and 
+      fixing the annotations, the information is compiled together with the spectral data
+      into MassBank records, which can then be uploaded to a MassBank database.
+
+This vignette describes basic usage with the standard workflow. The package is
+flexible and allows for different advanced use cases. Examples of specialized
+applications of *RMassBank* are available at the *RMassBank*
+message board hosted by the Metabolomics-Forum:
+(http://www.metabolomics-forum.com/viewforum.php?f=29).
+
+# Installation and loading
+
+The library is available from Bioconductor ((http://www.bioconductor.org)).
+In addition to the library itself, it is recommended to install the OpenBabel
+chemical toolkit, available from (http://www.openbabel.org) for various
+platforms (or via Linux package distribution systems).
+
+The library is loaded as follows
+
+```{r load-librarysource}
+library(RMassBank)
+``` 
+
+The data used in the following example is available from Zenodo
+(https://zenodo.org/uploads/11198385)
+
+```{r get-zenodo}
+
+data_dir <- tempfile("dir")
+fs::dir_create(data_dir)
+options(timeout = max(300, getOption("timeout")))
+download.file(
+  "https://zenodo.org/api/records/11104371/files-archive",
+  fs::path(data_dir, "data.zip"),
+  mode = "wb"
+)
+zip::unzip(fs::path(data_dir, "data.zip"),
+           exdir = data_dir)
+``` 
+
+# Input files and settings
+
+
+```{r compound.list}
+file.copy(system.file("sample_metadata/compounds.csv", 
+	package="RMassBank"), fs::path(data_dir, "compounds.csv")
+)
+file.copy(system.file("sample_metadata/settings.ini", 
+	package="RMassBank"), fs::path(data_dir, "settings.ini"))
+
+loadList(fs::path(data_dir, "compounds.csv"))
+loadRmbSettings(fs::path(data_dir, "settings.ini"))
+```
+
+## Standard workflow
+
+Here, we quickly run the normal RMassBank workflow as described in the main vignette:
+
+```{r msmsWorkflow}
+
+
+cpds <- readr::read_csv(fs::path(data_dir, "compounds.csv"))
+files <- fs::dir_ls(data_dir, glob="*.mzML")
+match_files <- files |> 
+  stringr::str_match(".*_(?<id>[0-9]+)\\.mzML") |> 
+  magrittr::set_colnames(c("file", "id")) |>
+  tibble::as_tibble()
+match_files$ids
+
+w <- newMsmsWorkspace()
+w <- msmsRead(w, files = match_files$file, cpdids = match_files$id,
+              mode = "pH", readMethod = "mzR")
+
+w <- msmsWorkflow(w, mode="pH", steps=c(2:8))
+
+```
+
+## EIC extraction and correlation
+
+To get higher-quality spectra, we can extract parent and fragment EICs for all 
+compounds and find correlations.
+
+Step 1 extracts the EIC for the parents:
+
+```{r eicWorkflow-step1}
+
+w <- eicWorkflow(w, mode="pH", steps=1)
+
+attr(w@spectra[[2]], "eic") |> 
+  ggplot2::ggplot() +
+  ggplot2::aes(x=rt, y=intensity) +
+  ggplot2::geom_line()
+```
+
+Step 2 extracts EICs for individual fragments. (For this, MSMS must be acquired in targeted mode)
+
+```{r eicWorkflow-step2}
+
+w <- eicWorkflow(w, mode="pH", steps=2)
+
+eics <- attr(w@spectra[[2]]@children[[4]], "eics")
+eics[1:12] |>
+  dplyr::bind_rows(, .id="fragment") |>
+  ggplot2::ggplot() +
+  ggplot2::aes(x=rt, y=intensity) +
+  ggplot2::geom_line() +
+  ggplot2::facet_wrap(ggplot2::vars(mz))
+
+```
+
+Step 3 and 4 calculate parent-fragment correlations,  and use the formula annotation results
+(the original RMassBank approach) to estimate a threshold for correlation.
+
+Step 5 applies the filtering. Note that in contrast to the classical `msmsWorkflow`,
+
+
+```{r eicWorkflow-step345, fig.show='hide'}
+
+w <- eicWorkflow(w, mode="pH", steps=3:4)
+attr(w, "eicScoreFilter")
+getData(w@spectra[[2]]@children[[4]]) |> nrow()
+
+w <- eicWorkflow(w, mode="pH", steps=5)
+getData(w@spectra[[2]]@children[[4]]) |> nrow()
+
+
+```
+# Record export
+
+Records are exported in the usual manner.
+
+```{r}
+mb <- newMbWorkspace(w)
+
+mb <- mbWorkflow(mb)
+
+mb <- resetInfolists(mb)
+fs::dir_create(fs::path(data_dir, "infolists"))
+file.copy(system.file("sample_metadata/infolist_pH.csv", 
+	package="RMassBank"), fs::path(data_dir, "infolists"))
+mb <- loadInfolists(mb, fs::path(data_dir, "infolists"))
+mb <- mbWorkflow(mb)
+```
+
+# Session information
+
+```{r }
+sessionInfo()
+```
