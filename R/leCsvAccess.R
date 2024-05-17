@@ -75,7 +75,7 @@ loadList <- function(path, listEnv = NULL, check = TRUE)
     }
     
     # Evaluate if all strictly necessary columns are in the list
-    cols <- c('ID', 'Name', 'SMILES', 'RT', 'CAS')
+    cols <- c('ID', 'Name', 'SMILES', 'RT')
     d <- setdiff(cols, n)
     if(length(d)>0){
         stop(paste("Some columns are missing in the compound list. It needs at least", paste(cols,collapse=", ")))
@@ -203,10 +203,10 @@ loadList <- function(path, listEnv = NULL, check = TRUE)
     
     # If "Level" is not in the compound list it MUST be a standard list, so process just as before:
     if(!newList){
-        cols <- c('ID', 'Name', 'SMILES', 'RT', 'CAS')
+        cols <- c('ID', 'Name', 'SMILES', 'RT')
         d <- setdiff(cols, n)
         if(length(d)>0){
-            stop("Some columns are missing in the compound list. Needs at least ID, Name, SMILES, RT, CAS.")
+            stop("Some columns are missing in the compound list. Needs at least ID, Name, SMILES, RT.")
         }
   
         ###

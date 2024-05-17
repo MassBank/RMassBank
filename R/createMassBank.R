@@ -674,6 +674,7 @@ gatherData <- function(id)
 	dbcas <- findCAS(id)
 	dbname <- findName(id)
 	if(is.na(dbname)) dbname <- ""
+	if(length(dbcas) == 0) dbcas <- ""
 	if(is.na(dbcas)) dbcas <- ""
 	iupacName <- dbname
 	synonym <- dbname
