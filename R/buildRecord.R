@@ -437,7 +437,8 @@ setAccessionBuilder <- function(accessionBuilder) {
   variables$condition_hash <- substr(
     toupper(digest(variables$condition, serialize=FALSE)),
     1, .adductHashSize)
-  as.character(glue(string, .envir = variables))
+  envir <- as.environment(variables)
+  as.character(glue(string, .envir = envir))
 }
 
 .simpleAccessionBuilder <- function(cpd, spectrum, subscan)

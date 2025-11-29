@@ -654,7 +654,7 @@ getPcCHEBI <- function(query, from = "inchikey")
 #' @export
 getCSID <- function(query)
 {
-	baseURL <- "http://www.chemspider.com/InChI.asmx/InChIKeyToCSID?inchi_key="
+	baseURL <- "http://legacy.chemspider.com/InChI.asmx/InChIKeyToCSID?inchi_key="
 	url <- paste0(baseURL, query)
 	
 	data <- retrieveDataWithRetry(url = utils::URLencode(url), timeout=8)
