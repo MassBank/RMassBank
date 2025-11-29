@@ -732,7 +732,7 @@ gatherData <- function(id)
 	# Get the api key from the settings
 	ccte_api_key = getOption("RMassBank")$settings$ccte_api_key
 
-	if(!is.null(api_key)) {
+	if(!is.null(ccte_api_key)) {
 	  dtxsid <- getDTXSID(key = inchikey_split, api_key = ccte_api_key)
 
 	  if(is.null(dtxsid)){
