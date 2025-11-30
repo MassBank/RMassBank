@@ -4,17 +4,17 @@
 	if(is.null(o)){
 		stop("Please load your settings before using the RMassBank workflow.")
 	}
-	
+
 }
 
 
 #' RMassBank settings
-#' 
+#'
 #' Describes all settings for the RMassBank settings file.
-#' 
+#'
 #' \itemize{
 #' 		\item{\code{deprofile}}{
-#'   	Whether and how to deprofile input raw files. Leave the 
+#'   	Whether and how to deprofile input raw files. Leave the
 #' 			setting empty if your raw files are already in "centroid" mode. If your
 #' 			input files are in profile mode, you have the choice between algorithms
 #' 			\code{\link{deprofile}.spline, deprofile.fwhm, deprofile.localMax}; refer to
@@ -35,7 +35,7 @@
 #' 			version 1 is considered outdated and should be used only if for some reason you are running
 #' 			old servers and an upgrade is not feasible.}
 #' 		\item{\code{use_rean_peaks}}{
-#'   	Whether to include peaks from reanalysis (see 
+#'   	Whether to include peaks from reanalysis (see
 #' 			\code{\link{reanalyzeFailpeaks}}) in the MassBank records. Boolean, TRUE or FALSE.
 #' 			}
 #' 		\item{\code{annotations}}{
@@ -43,32 +43,32 @@
 #' 			\code{authors, copyright, license, instrument, instrument_type, compound_class}
 #' 			correspond to the MassBank entries \code{AUTHORS, COPYRIGHT, PUBLICATION, LICENSE, AC$INSTRUMENT,
 #' 			AC$INSTRUMENT_TYPE, CH$COMPOUND_CLASS}. The entry \code{confidence_comment} is added as
-#' 			\code{COMMENT: CONFIDENCE} entry. 
-#' 
+#' 			\code{COMMENT: CONFIDENCE} entry.
+#'
 #' 			The entry \code{internal_id_fieldname} is used to name
-#' 			the MassBank entry which will keep a reference to the internal compound ID used in 
-#' 			the workflow: for \code{internal_id_fieldname = MYID} and e.g. compound 1234, an 
-#' 			entry will be added	to the MassBank record with 
+#' 			the MassBank entry which will keep a reference to the internal compound ID used in
+#' 			the workflow: for \code{internal_id_fieldname = MYID} and e.g. compound 1234, an
+#' 			entry will be added	to the MassBank record with
 #' 			\code{COMMENT: MYID 1234}. The internal fieldname should not be left empty!
-#' 			
+#'
 #' 			The entries \code{lc_gradient, lc_flow, lc_solvent_a, lc_solvent_b, lc_column} correspond
-#' 			to the MassBank entries \code{AC$CHROMATOGRAPHY: FLOW_GRADIENT, FLOW_RATE, 
-#' 			SOLVENT A, SOLVENT B, COLUMN_NAME}. 
-#' 
+#' 			to the MassBank entries \code{AC$CHROMATOGRAPHY: FLOW_GRADIENT, FLOW_RATE,
+#' 			SOLVENT A, SOLVENT B, COLUMN_NAME}.
+#'
 #' 			\code{ms_type, ionization} correspond to \code{AC$MASS_SPECTROMETRY: MS_TYPE, IONIZATION}.
-#' 
+#'
 #' 			\code{entry_prefix} is the two-letter prefix used when building MassBank accession codes.
-#' 
+#'
 #' 			Entries under \code{ms_dataprocessing} are added as \code{MS$DATA_PROCESSING:} entries,
-#' 			in addition to the default \code{WHOLE: RMassBank}.   
+#' 			in addition to the default \code{WHOLE: RMassBank}.
 #' 			}
 #'   	\item{\code{annotator}}{
-#'     For advanced users: option to select your own custom annotator. 
+#'     For advanced users: option to select your own custom annotator.
 #'     Check \code{\link{annotator.default}} and the source code for details.}
 #' 		\item{\code{spectraList}}{
 #'   	This setting describes the experimental annotations for the single
 #' 			data-dependent scans. For every data-dependent scan event, a \code{spectraList} entry with
-#' 			\code{mode, ces, ce, res} denoting collision mode, collision energy in short and verbose 
+#' 			\code{mode, ces, ce, res} denoting collision mode, collision energy in short and verbose
 #' 			notation, and FT resolution.}
 #' 		\item{\code{accessionNumberShifts}}{
 #'   	This denotes the starting points for accession numbers
@@ -90,71 +90,71 @@
 #' 			the \code{MS2} setting is used for a common recalibration curve. See \code{\link{recalibrate.loess}}
 #' 			for details.}
 #'   	\item{\code{multiplicityFilter}}{
-#'     Define the multiplicity filtering level. Default is 2, a value of 1 
+#'     Define the multiplicity filtering level. Default is 2, a value of 1
 #'     is off (no filtering) and >2 is harsher filtering.}
 #'     \item{\code{titleFormat}}{
 #'     The title of MassBank records is a mini-summary
-#'     of the record, for example "Dinotefuran; LC-ESI-QFT; MS2; CE: 35%; R=35000; [M+H]+". 
-#'     By default, the first compound name \code{CH$NAME}, instrument type 
-#'     \code{AC$INSTRUMENT_TYPE}, MS/MS type \code{AC$MASS_SPECTROMETRY: MS_TYPE}, 
+#'     of the record, for example "Dinotefuran; LC-ESI-QFT; MS2; CE: 35%; R=35000; [M+H]+".
+#'     By default, the first compound name \code{CH$NAME}, instrument type
+#'     \code{AC$INSTRUMENT_TYPE}, MS/MS type \code{AC$MASS_SPECTROMETRY: MS_TYPE},
 #'     collision energy \code{RECORD_TITLE_CE}, resolution \code{AC$MASS_SPECTROMETRY: RESOLUTION}
-#'     and precursor \code{MS$FOCUSED_ION: PRECURSOR_TYPE} are used. If alternative 
+#'     and precursor \code{MS$FOCUSED_ION: PRECURSOR_TYPE} are used. If alternative
 #'     information is relevant to differentiate acquired spectra, the title should be adjusted.
-#'     For example, many TOFs do not have a resolution setting. 
+#'     For example, many TOFs do not have a resolution setting.
 #'     See MassBank documentation for more.}
 #'   	\item{\code{filterSettings}}{
 #' 			A list of settings that affect the MS/MS processing. The entries
-#' 			\code{ppmHighMass, ppmLowMass, massRangeDivision} set values for 
-#'   		pre-processing, prior to recalibration. \code{ppmHighMass} defines the 
-#'     	ppm error for the high mass range (default 10 ppm for Orbitraps), 
-#'       \code{ppmLowMass} is the error for the low mass range (default 15 ppm 
-#'       for Orbitraps) and \code{massRangeDivision} is the m/z value defining 
+#' 			\code{ppmHighMass, ppmLowMass, massRangeDivision} set values for
+#'   		pre-processing, prior to recalibration. \code{ppmHighMass} defines the
+#'     	ppm error for the high mass range (default 10 ppm for Orbitraps),
+#'       \code{ppmLowMass} is the error for the low mass range (default 15 ppm
+#'       for Orbitraps) and \code{massRangeDivision} is the m/z value defining
 #'       the split between the high and low mass range (default m/z = 120).
-#' 
-#' 			The entry \code{ppmFine} defines the ppm cut-off post recalibration. 
-#'   		The default value of 5 ppm is recommended for Orbitraps. For other 
+#'
+#' 			The entry \code{ppmFine} defines the ppm cut-off post recalibration.
+#'   		The default value of 5 ppm is recommended for Orbitraps. For other
 #'     	instruments this can be interpreted from the recalibration plot.
-#'      All ppm limits are one-sided (e.g. this includes values to +5 ppm or -5 ppm 
+#'      All ppm limits are one-sided (e.g. this includes values to +5 ppm or -5 ppm
 #'      deviation from the exact mass).
-#' 			
-#' 			The entries \code{prelimCut, prelimCutRatio} define the intensity cut-off and 
-#'   		cut-off ratio (in % of the most intense peak) for pre-processing. This affects 
-#'     	the peak selection for the recalibration only. Careful: the default value 
-#'       1e4 for Orbitrap LTQ positive mode could remove all peaks for TOF data 
+#'
+#' 			The entries \code{prelimCut, prelimCutRatio} define the intensity cut-off and
+#'   		cut-off ratio (in % of the most intense peak) for pre-processing. This affects
+#'     	the peak selection for the recalibration only. Careful: the default value
+#'       1e4 for Orbitrap LTQ positive mode could remove all peaks for TOF data
 #'       and will remove too many peaks for Orbitrap LTQ negative mode spectra!
-#' 
+#'
 #' 			The entry \code{specOKLimit} defines the intensity limit to include MS/MS spectra.
-#'   		MS/MS spectra must have at least one peak above this limit to proceed through 
+#'   		MS/MS spectra must have at least one peak above this limit to proceed through
 #'     	the workflow.
-#' 
-#' 			\code{dbeMinLimit} defines the minimum allowable ring and double bond equivalents (DBE) 
-#'   		allowed for assigned formulas. This assumes maximum valuences for elements with 
+#'
+#' 			\code{dbeMinLimit} defines the minimum allowable ring and double bond equivalents (DBE)
+#'   		allowed for assigned formulas. This assumes maximum valuences for elements with
 #'     	multiple valence states. The default is -0.5 (accounting for fragments being ions).
-#' 
-#' 			The entries \code{satelliteMzLimit, satelliteIntLimit} define the cut-off m/z and 
-#'   		intensity values for satellite peak removal (an artefact of Fourier Transform 
-#'     	processing). All peaks within the m/z limit (default 0.5) and intensity ratio 
-#'       (default 0.05 or 5 %) of the respective peak will be removed. Applicable to 
-#'       Fourier Transform instruments only (e.g. Orbitrap).   
-#' 			}  
+#'
+#' 			The entries \code{satelliteMzLimit, satelliteIntLimit} define the cut-off m/z and
+#'   		intensity values for satellite peak removal (an artefact of Fourier Transform
+#'     	processing). All peaks within the m/z limit (default 0.5) and intensity ratio
+#'       (default 0.05 or 5 %) of the respective peak will be removed. Applicable to
+#'       Fourier Transform instruments only (e.g. Orbitrap).
+#' 			}
 #'     \item{\code{filterSettings}}{
-#' 			Parameters for adjusting the raw data retrieval. 
-#'   		The entry \code{ppmFine} defines the ppm error to look for the precursor in 
+#' 			Parameters for adjusting the raw data retrieval.
+#'   		The entry \code{ppmFine} defines the ppm error to look for the precursor in
 #'     	the MS1 (parent) spectrum. Default is 10 ppm for Orbitrap.
-#' 
-#' 			\code{mzCoarse} defines the error to search for the precursor specification 
-#'   		in the MS2 spectrum. This is often only saved to 2 decimal places and thus 
-#'     	can be quite inaccurate. The accuracy also depends on the isolation window used. 
+#'
+#' 			\code{mzCoarse} defines the error to search for the precursor specification
+#'   		in the MS2 spectrum. This is often only saved to 2 decimal places and thus
+#'     	can be quite inaccurate. The accuracy also depends on the isolation window used.
 #'       The default settings (for e.g. Orbitrap) is 0.5 (Da, or Th for m/z).
-#' 
-#' 			The entry \code{fillPrecursorScan} is largely untested. The default value 
+#'
+#' 			The entry \code{fillPrecursorScan} is largely untested. The default value
 #'   		(FALSE) assumes all necessary precursor information is available in the mzML file.
 #'     	A setting ot TRUE tries to fill in the precursor data scan number if it is missing.
-#'       Only tested on one case study so far - feedback welcome!   
-#' 			}  
+#'       Only tested on one case study so far - feedback welcome!
+#' 			}
 #' }
-#' 
-#' 
+#'
+#'
 #' @author Michael Stravs, Emma Schymanski
 #' @seealso \code{\link{loadRmbSettings}}
 #' @rdname RmbSettings
@@ -267,8 +267,8 @@ NULL
   recalibrator = list(
 	MS1 = "recalibrate.loess",
 	MS2 = "recalibrate.loess"),
-# Window width to look for MS1 peaks to recalibrate (in ppm)
-	recalibrateMS1Window= 15,
+  # Window width to look for MS1 peaks to recalibrate (in ppm)
+  recalibrateMS1Window= 15,
 
   # Define the multiplicity filtering level
   # Default is 2 (peak occurs at least twice)
@@ -293,13 +293,13 @@ NULL
 		  "R={AC$MASS_SPECTROMETRY: RESOLUTION}",
 		  "{MS$FOCUSED_ION: PRECURSOR_TYPE}"
   ),
-# Define filter settings.
-# For Orbitrap, settings of 15 ppm in low mass range, 10 ppm in high
-# mass range, m/z = 120 as mass range division and 5 ppm for recalibrated
-# data overall are recommended. 
+  # Define filter settings.
+  # For Orbitrap, settings of 15 ppm in low mass range, 10 ppm in high
+  # mass range, m/z = 120 as mass range division and 5 ppm for recalibrated
+  # data overall are recommended.
   filterSettings = list(
-		  	ppmHighMass = 10,
-  			ppmLowMass = 15,
+		  ppmHighMass = 10,
+  		  ppmLowMass = 15,
 		  massRangeDivision= 120,
 		  ppmFine= 5,
 		  prelimCut= 1e4,
@@ -310,13 +310,31 @@ NULL
 		  dbeMinLimit= -0.5,
 		  satelliteMzLimit= 0.5,
 		  satelliteIntLimit= 0.05
-  	),
-	
-	findMsMsRawSettings = list(
-			ppmFine= 10,
-			mzCoarse= 0.5,
-			fillPrecursorScan= FALSE)
-  )
+		  ),
+ # Define raw MS retrieval settings.
+ # fillPrecursorScan is FALSE for "good" mzML files which have all the info needed.
+ # However, for example AB Sciex files will have missing precursor scan information,
+ # in which case fillPrecursorScan = TRUE is needed. Try it out.
+ findMsMsRawSettings = list(
+		ppmFine= 10,
+		mzCoarse= 0.5,
+		fillPrecursorScan= FALSE),
+
+ # Select how to treat unknown compound masses:
+ # "charged" (the default, also if no option set) treats unknown (level 5) compound masses as the m/z,
+ # "neutral" treats unknown (level 5) compound masses as the neutral mass and applies [M+H]+ and [M-H]- calculations accordingly.
+ unknownMass = "charged",
+
+ # Add the CCTE api key to retrieve information from https://api-ccte.epa.gov/docs
+ # Be aware, this is confidential information, so do not share with unauthorized
+ # persons
+ ccte_api_key = NULL,
+
+ # Add the RSC api key to retrieve information from https://developer.rsc.org/api-reference
+ # Be aware, this is confidential information, so do not share with unauthorized
+ # persons
+ rcs_api_key = NULL
+)
 
 # Writes a file with sample settings which the user can adjust with his values.
 #' @export
@@ -359,7 +377,7 @@ loadRmbSettings <- function(file_or_list)
 			} else{
 				babelexists <- file.exists(babelcheck)
 			}
-			
+
 			if(!babelexists){
 				stop("The babeldir does not exist. Please check the babeldir in the settings and adjust it accordingly.")
 			}
@@ -387,11 +405,11 @@ loadRmbSettings <- function(file_or_list)
 	}
 	else
 		stop("Options format not recognized. Use YAML (.ini, .yml) or R file (.R) format.")
-	
+
   }
   else
     stop("The file path supplied for the options does not exist.")
-  
+
   # Settings are loaded, now check if they are up to date
   o <- getOption("RMassBank")
   curr <- names(.settingsList)
@@ -412,28 +430,28 @@ loadRmbSettingsFromEnv <- function(env = .GlobalEnv)
 }
 
 #' RMassBank settings
-#' 
+#'
 #' Load, set and reset settings for RMassBank.
-#' 
+#'
 #' \code{RmbSettingsTemplate} creates a template file in which you can adjust the
 #' settings as you like. Before using RMassBank, you must then load the
 #' settings file using \code{loadRmbSettings}. \code{RmbDefaultSettings} loads
-#' the default settings. \code{loadRmbSettingsFromEnv} loads the settings 
+#' the default settings. \code{loadRmbSettingsFromEnv} loads the settings
 #' stored in env$RmbSettings, which is useful when reloading archives with
-#' saved settings inside.  
-#' 
+#' saved settings inside.
+#'
 #' Note: no settings are loaded upon loading MassBank!
 #' This is intended, so that one never forgets to load the correct settings.
-#' 
+#'
 #' The settings are described in \code{\link{RmbSettings}}.
-#' 
+#'
 #' @aliases loadRmbSettings RmbDefaultSettings RmbSettingsTemplate loadRmbSettingsFromEnv
-#' @usage loadRmbSettings(file_or_list) 
-#' 
+#' @usage loadRmbSettings(file_or_list)
+#'
 #' loadRmbSettingsFromEnv(env = .GlobalEnv)
-#' 
+#'
 #' RmbDefaultSettings()
-#' 
+#'
 #' RmbSettingsTemplate(target)
 #' @param file_or_list The file (YML or R format) or R \code{list} with the settings to load.
 #' @param target The path where the template setting file should be stored.
@@ -444,12 +462,12 @@ loadRmbSettingsFromEnv <- function(env = .GlobalEnv)
 #' @author Michael Stravs
 #' @seealso \code{\link{RmbSettings}}
 #' @examples
-#' 
+#'
 #'  # Create a standard settings file and load it (unedited)
 #' 	RmbSettingsTemplate("mysettings.ini")
 #'  loadRmbSettings("mysettings.ini")
 #'  unlink("mysettings.ini")
-#' 
+#'
 #' @export
 RmbDefaultSettings <- function()
 {
