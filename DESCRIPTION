@@ -1,7 +1,7 @@
 Type: Package
 Package: RMassBank
 Title: Workflow to process tandem MS files and build MassBank records
-Version: 3.22.1
+Version: 3.22.2
 Authors@R: c(
     person("RMassBank at Eawag", , , "massbank@eawag.ch", role = "cre"),
     person("Michael A.", "Stravs", , "michael.stravs@eawag.ch", role = "aut",
