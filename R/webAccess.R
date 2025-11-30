@@ -791,7 +791,7 @@ getPcSDF <- function(query, from = "smiles"){
 #' Retrieves ChemSpider CSID from UK RSC for a search term.
 #'
 #' Requires a valid API key
-#' @usage getCSID(key, api_key)
+#' @usage getCSID(key, identifier, api_key)
 #' @param key ID to be converted
 #' @param identifier identifier (name, inchikey)
 #' @param api_key API key for ChemSpider (to be created on the developer site)
@@ -804,7 +804,7 @@ getPcSDF <- function(query, from = "smiles"){
 #' \url{https://developer.rsc.org/api-reference#}
 #' @examples
 #' \dontrun{
-#' getDTXSID(key = "MKXZASYAUGDDCJ-NJAFHUGGSA-N", identifier = "InChIKey", api_key = "your key")
+#' getDTXSID(key = "MKXZASYAUGDDCJ-NJAFHUGGSA-N", identifier = "InChIKey", api_key = "your RCS API key")
 #' }
 #' @export
 getCSID <- function(key, identifier, api_key)
