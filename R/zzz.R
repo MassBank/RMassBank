@@ -19,9 +19,10 @@
 #' @import rjson
 #' @import S4Vectors
 #' @importFrom stats lm loess median predict smooth.spline
+#' @import stringr
 #' @import tibble
 #' @importFrom tidyselect everything
-#' @importFrom utils URLencode capture.output data flush.console 
+#' @importFrom utils URLencode capture.output data flush.console
 #' @importFrom utils packageVersion read.csv read.csv2 setTxtProgressBar
 #' @importFrom utils str txtProgressBar type.convert write.csv write.table
 #' @importFrom utils globalVariables
@@ -39,7 +40,7 @@
   RMassBank.env$export.invalid <- FALSE
   RMassBank.env$export.molfiles <- TRUE
   RMassBank.env$strictMsMsSpectraSelection <- FALSE
-  
+
   mb <- list()
   attach(RMassBank.env)
 }
