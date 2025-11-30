@@ -20,7 +20,7 @@ compound list.
 }
 \details{
 Composes the "upper part" of a MassBank record filled with chemical data
-about the compound: name, exact mass, structure, CAS no..  
+about the compound: name, exact mass, structure, CAS no..
 The instrument type is also written into this block (even
 if not strictly part of the chemical information). Additionally, index
 fields are added at the start of the record, which will be removed later:

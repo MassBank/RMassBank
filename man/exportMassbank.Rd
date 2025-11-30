@@ -10,7 +10,7 @@ exportMassbank(compiled, molfile = NULL)
 \item{compiled}{\code{RmbSpectraSet}
 the spectra of one compound for which files should be exported}
 
-\item{molfile}{A molfile from \code{\link{createMolfile}}; 
+\item{molfile}{A molfile from \code{\link{createMolfile}};
 deprecated since molfiles are not used by MassBank anymore.}
 }
 \value{
