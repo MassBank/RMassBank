@@ -9,7 +9,7 @@ gatherDataUnknown(id, mode, retrieval)
 \arguments{
 \item{id}{The compound ID.}
 
-\item{mode}{\code{"pH", "pNa", "pM", "pNH4", "mH", "mM", "mFA"} for different ions 
+\item{mode}{\code{"pH", "pNa", "pM", "pNH4", "mH", "mM", "mFA"} for different ions
 ([M+H]+, [M+Na]+, [M]+, [M+NH4]+, [M-H]-, [M]-, [M+FA]-).}
 
 \item{retrieval}{A value that determines whether the files should be handled either as "standard",
@@ -25,7 +25,7 @@ Retrieves annotation data for an unknown compound by using basic information pre
 }
 \details{
 Composes the "upper part" of a MassBank record filled with chemical data
-about the compound: name, exact mass, structure, CAS no..  
+about the compound: name, exact mass, structure, CAS no..
 The instrument type is also written into this block (even
 if not strictly part of the chemical information). Additionally, index
 fields are added at the start of the record, which will be removed later:

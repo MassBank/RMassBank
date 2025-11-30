@@ -10,7 +10,7 @@ CTS.externalIdTypes(data)
 \item{data}{The complete CTS record as retrieved by \code{\link{getCtsRecord}}.}
 }
 \value{
-Returns an array of all database names for which there are external 
+Returns an array of all database names for which there are external
 identifiers stored in the record.
 }
 \description{
@@ -24,7 +24,7 @@ Find all available databases for a CTS record
 
 data <- getCTS("UHOVQNZJYSORNB-UHFFFAOYSA-N")
 databases <- CTS.externalIdTypes(data)
-} 
+}
 
 }
 \author{

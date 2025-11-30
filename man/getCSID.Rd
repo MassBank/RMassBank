@@ -2,31 +2,39 @@
 % Please edit documentation in R/webAccess.R
 \name{getCSID}
 \alias{getCSID}
-\title{Retrieve the Chemspider ID for a given compound}
+\title{Search ChemSpider CSID}
 \usage{
-getCSID(query)
+getCSID(key, identifier, api_key)
 }
 \arguments{
-\item{query}{The InChIKey of the compound}
+\item{key}{ID to be converted}
+
+\item{identifier}{identifier (name, inchikey)}
+
+\item{api_key}{API key for ChemSpider (to be created on the developer site)}
 }
 \value{
-Returns the chemspide
+The CSID (in string type)
 }
 \description{
-Given an InChIKey, this function queries the chemspider web API to retrieve
-the Chemspider ID of he compound with that InChIkey.
+Retrieves ChemSpider CSID from UK RSC for a search term.
+}
+\details{
+Requires a valid API key
 }
 \examples{
-
 \dontrun{
-# Return all CAS registry numbers stored for benzene.
-data <- getCtsRecord("UHOVQNZJYSORNB-UHFFFAOYSA-N")
-cas <- CTS.externalIdSubset(data, "CAS")
-} 
+getDTXSID(key = "MKXZASYAUGDDCJ-NJAFHUGGSA-N", identifier = "InChIKey", api_key = "your RCS API key")
+}
+}
+\references{
+ChemSpider search: \url{https://developer.rsc.org/api-reference#}
 
+ChemSpider developer site: \url{https://developer.rsc.org}
+
+ChemSider REST:
+\url{https://developer.rsc.org/api-reference#}
 }
 \author{
-Michele Stravs, Eawag <stravsmi@eawag.ch>
-
-Erik Mueller, UFZ <erik.mueller@ufz.de>
+Tobias Schulze
 }

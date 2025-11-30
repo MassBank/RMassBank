@@ -26,7 +26,7 @@ getPcId("MKXZASYAUGDDCJ-NJAFHUGGSA-N")
 
 }
 \references{
-PubChem search: \url{http://pubchem.ncbi.nlm.nih.gov/} 
+PubChem search: \url{http://pubchem.ncbi.nlm.nih.gov/}
 
 Pubchem REST:
 \url{https://pubchem.ncbi.nlm.nih.gov/pug_rest/PUG_REST.html}
