@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: 'devel', bioc: '3.19', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          - { os: ubuntu-latest, r: 'devel', bioc: '3.23', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
           #- { os: macOS-latest, r: 'devel', bioc: '3.19'}
           #- { os: windows-latest, r: 'devel', bioc: '3.19'}
     env:
@@ -120,9 +120,9 @@ jobs:
           sysreqs=$(Rscript -e 'cat("apt-get update -y && apt-get install -y", paste(gsub("apt-get install -y ", "", remotes::system_requirements("ubuntu", "20.04")), collapse = " "))')
           echo $sysreqs
           sudo -s eval "$sysreqs"
-          
+
           # in addition install tesseract
-          
+
           sudo apt-get install -y libtesseract-dev libleptonica-dev
 
       - name: Install macOS system dependencies
@@ -188,7 +188,7 @@ jobs:
           BiocManager::install("RforMassSpectrometry/MsCoreUtils", ask = FALSE, force = TRUE)
           ## Pass #2 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
-          
+
           ## Temporaly use the development version of RMassBankData
           ## remotes::install_github(repo = "MassBank/RMassBankData")
 
@@ -207,7 +207,7 @@ jobs:
           remotes::install_cran("rcmdcheck")
           BiocManager::install("BiocCheck")
         shell: Rscript {0}
-        
+
         env:
             GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
@@ -236,7 +236,7 @@ jobs:
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
-        
+
       - name: Save cache (Linux)
         uses: actions/cache/save@v3
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os == 'Linux' "

@@ -10,11 +10,11 @@ getCtsRecord(key)
 \item{key}{The InChI key.}
 }
 \value{
-Returns a list with all information from CTS: \code{inchikey, 
+Returns a list with all information from CTS: \code{inchikey,
 	inchicode, formula, exactmass} contain single values. \code{synonyms} contains
 an unordered list of scored synonyms (\code{type, name, score}, where \code{type}
 indicates either a normal name or a specific IUPAC name, see below).
- \code{externalIds} contains an unordered list of identifiers of the compound in 
+ \code{externalIds} contains an unordered list of identifiers of the compound in
 various databases (\code{name, value}, where \code{name} is the database name and
 \code{value} the identifier in that database.)
 }

@@ -5,7 +5,7 @@
 \alias{readMbdata}
 \title{Flatten, or re-read, MassBank header blocks}
 \usage{
-flatten(mbdata) 
+flatten(mbdata)
 
 readMbdata(row)
 }

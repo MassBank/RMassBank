@@ -27,7 +27,7 @@ getDTXSID("MKXZASYAUGDDCJ-NJAFHUGGSA-N")
 }
 }
 \references{
-CCTE search: \url{https://api-ccte.epa.gov/docs} 
+CCTE search: \url{https://api-ccte.epa.gov/docs}
 
 CCTE REST:
 \url{https://api-ccte.epa.gov/docs}

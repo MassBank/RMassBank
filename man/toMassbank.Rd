@@ -16,7 +16,7 @@ toMassbank(o, ...)
 \item{o}{An object to convert to MassBank record format. This may be
 a single `RmbSpectrum2`, or a complete compound (an `RmbSpectraSet`),}
 
-\item{...}{Parameters passed to the implementation, 
+\item{...}{Parameters passed to the implementation,
 in particular `addAnnotation`}
 
 \item{addAnnotation}{`logical`, whether to add peak annotations (putative formulas) to the record.}
@@ -38,10 +38,10 @@ entries can be as follows: \itemize{
 
  is written as
 
- \code{CH\$EXACT_MASS: 329.1023} 
+ \code{CH\$EXACT_MASS: 329.1023}
 \item A character array:
 
- \code{'CH\$NAME' = c('2-Aminobenzimidazole', '1H-Benzimidazol-2-amine')} 
+ \code{'CH\$NAME' = c('2-Aminobenzimidazole', '1H-Benzimidazol-2-amine')}
 
 is written as
 
@@ -49,19 +49,19 @@ is written as
 
 \code{CH\$NAME: 1H-Benzimidazol-2-amine}
 
-\item A named list of strings: 
+\item A named list of strings:
 
-	\code{'CH\$LINK' = list('CHEBI' = "27822", "KEGG" = "C10901")} 
+	\code{'CH\$LINK' = list('CHEBI' = "27822", "KEGG" = "C10901")}
 
-is written as 
+is written as
 
 \code{CH\$LINK: CHEBI 27822}
 
-\code{CH\$LINK: KEGG C10901} 
+\code{CH\$LINK: KEGG C10901}
 
 \item A data frame (e.g. the peak table) is written as specified in
 the MassBank record format (Section 2.6.3): the column names are used as
-headers for the first line, all data rows are printed space-separated. 
+headers for the first line, all data rows are printed space-separated.
 }
 }
 \note{
@@ -76,7 +76,7 @@ c('bla','blub')}.
 # Read just the compound info skeleton from the Internet for some compound ID
 id <- 35
 mbdata <- gatherData(id)
-#' # Export the mbdata blocks to line arrays 
+#' # Export the mbdata blocks to line arrays
 # (there is no spectrum information, just the compound info...)
 mbtext <- toMassbank(mbdata)
 }

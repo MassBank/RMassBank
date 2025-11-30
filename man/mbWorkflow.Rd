@@ -21,10 +21,10 @@ mbWorkflow(
 which should then be manually inspected.}
 
 \item{gatherData}{A variable denoting whether to retrieve information using several online databases \code{gatherData= "online"}
-or to use the local babel installation \code{gatherData= "babel"}. Note that babel is used either way, if a directory is given 
+or to use the local babel installation \code{gatherData= "babel"}. Note that babel is used either way, if a directory is given
 in the settings. This setting will be ignored if retrieval is set to "standard"}
 
-\item{filter}{If \code{TRUE}, the peaks will be filtered according to the standard processing workflow in RMassBank - 
+\item{filter}{If \code{TRUE}, the peaks will be filtered according to the standard processing workflow in RMassBank -
 only the best formula for a peak is retained, and only peaks passing multiplicity filtering are retained. If FALSE, it is assumed
 that the user has already done filtering, and all peaks in the spectrum should be printed in the record (with or without formula.)}
 }
@@ -69,7 +69,7 @@ Step 8: Create the list.tsv in the molfiles folder, which is required by MassBan
 		mb <- newMbWorkspace(w) # w being a msmsWorkspace
 		mb <- loadInfolists(mb, "D:/myInfolistPath")
 		mb <- mbWorkflow(mb, steps=c(1:3), "newinfos.csv")
-		
+
 }
 }
 \seealso{

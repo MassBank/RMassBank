@@ -24,7 +24,7 @@ Select a subset of external IDs from a CTS record.
 # Return all CAS registry numbers stored for benzene.
 data <- getCtsRecord("UHOVQNZJYSORNB-UHFFFAOYSA-N")
 cas <- CTS.externalIdSubset(data, "CAS")
-} 
+}
 
 }
 \author{

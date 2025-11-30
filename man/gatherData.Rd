@@ -38,8 +38,8 @@ inserted empty and will be filled later on.
 }
 \references{
 Chemical Translation Service:
-\url{http://uranus.fiehnlab.ucdavis.edu:8080/cts/homePage} 
-cactus Chemical Identifier Resolver: 
+\url{http://uranus.fiehnlab.ucdavis.edu:8080/cts/homePage}
+cactus Chemical Identifier Resolver:
 \url{http://cactus.nci.nih.gov/chemical/structure}
 MassBank record format:
 \url{http://www.massbank.jp/manuals/MassBankRecord_en.pdf}
