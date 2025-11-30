@@ -168,7 +168,7 @@ getDTXSID <- function(key, api_key)
     currEnvir <- environment()
 
     tryCatch({
-        base_url <- paste0("https://api-ccte.epa.gov/chemical/search/equal/", key)
+        base_url <- stringr::str_c("https://comptox.epa.gov/ctx-api/chemical/search/equal/", key)
         url <- httr2::request(base_url)
         url <- url |> httr2::req_headers("x-api-key" = api_key, "accept" = "application/json")
         resp <- httr2::req_perform(url)
@@ -220,7 +220,7 @@ getDTXCID <- function(key, api_key)
     currEnvir <- environment()
 
     tryCatch({
-        base_url <- paste0("https://api-ccte.epa.gov/chemical/search/equal/", key)
+        base_url <- stringr::str_c("https://comptox.epa.gov/ctx-api/chemical/search/equal/", key)
         url <- httr2::request(base_url)
         url <- url |> httr2::req_headers("x-api-key" = api_key, "accept" = "application/json")
         resp <- httr2::req_perform(url)
@@ -272,7 +272,7 @@ getPrefName <- function(key, api_key)
     currEnvir <- environment()
 
     tryCatch({
-        base_url <- paste0("https://api-ccte.epa.gov/chemical/search/equal/", key)
+        base_url <- stringr::str_c("https://comptox.epa.gov/ctx-api/chemical/search/equal/", key)
         url <- httr2::request(base_url)
         url <- url |> httr2::req_headers("x-api-key" = api_key, "accept" = "application/json")
         url |> httr2::req_dry_run()
@@ -326,7 +326,7 @@ getCASRN <- function(key, api_key)
     currEnvir <- environment()
 
     tryCatch({
-        base_url <- paste0("https://api-ccte.epa.gov/chemical/search/equal/", key)
+        base_url <- stringr::str_c("https://comptox.epa.gov/ctx-api/chemical/search/equal/", key)
         url <- httr2::request(base_url)
         url <- url |> httr2::req_headers("x-api-key" = api_key, "accept" = "application/json")
         resp <- httr2::req_perform(url)
@@ -379,7 +379,7 @@ getDTXSMILES <- function(key, api_key)
     currEnvir <- environment()
 
     tryCatch({
-        base_url <- paste0("https://api-ccte.epa.gov/chemical/search/equal/", key)
+        base_url <- stringr::str_c("https://comptox.epa.gov/ctx-api/chemical/search/equal/", key)
         url <- httr2::request(base_url)
         url <- url |> httr2::req_headers("x-api-key" = api_key, "accept" = "application/json")
         resp <- httr2::req_perform(url)
