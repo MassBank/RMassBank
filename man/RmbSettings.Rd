@@ -9,7 +9,7 @@ Describes all settings for the RMassBank settings file.
 \details{
 \itemize{
 		\item{\code{deprofile}}{
-  	Whether and how to deprofile input raw files. Leave the 
+  	Whether and how to deprofile input raw files. Leave the
 			setting empty if your raw files are already in "centroid" mode. If your
 			input files are in profile mode, you have the choice between algorithms
 			\code{\link{deprofile}.spline, deprofile.fwhm, deprofile.localMax}; refer to
@@ -30,7 +30,7 @@ Describes all settings for the RMassBank settings file.
 			version 1 is considered outdated and should be used only if for some reason you are running
 			old servers and an upgrade is not feasible.}
 		\item{\code{use_rean_peaks}}{
-  	Whether to include peaks from reanalysis (see 
+  	Whether to include peaks from reanalysis (see
 			\code{\link{reanalyzeFailpeaks}}) in the MassBank records. Boolean, TRUE or FALSE.
 			}
 		\item{\code{annotations}}{
@@ -38,32 +38,32 @@ Describes all settings for the RMassBank settings file.
 			\code{authors, copyright, license, instrument, instrument_type, compound_class}
 			correspond to the MassBank entries \code{AUTHORS, COPYRIGHT, PUBLICATION, LICENSE, AC$INSTRUMENT,
 			AC$INSTRUMENT_TYPE, CH$COMPOUND_CLASS}. The entry \code{confidence_comment} is added as
-			\code{COMMENT: CONFIDENCE} entry. 
+			\code{COMMENT: CONFIDENCE} entry.
 
 			The entry \code{internal_id_fieldname} is used to name
-			the MassBank entry which will keep a reference to the internal compound ID used in 
-			the workflow: for \code{internal_id_fieldname = MYID} and e.g. compound 1234, an 
-			entry will be added	to the MassBank record with 
+			the MassBank entry which will keep a reference to the internal compound ID used in
+			the workflow: for \code{internal_id_fieldname = MYID} and e.g. compound 1234, an
+			entry will be added	to the MassBank record with
 			\code{COMMENT: MYID 1234}. The internal fieldname should not be left empty!
-			
+
 			The entries \code{lc_gradient, lc_flow, lc_solvent_a, lc_solvent_b, lc_column} correspond
-			to the MassBank entries \code{AC$CHROMATOGRAPHY: FLOW_GRADIENT, FLOW_RATE, 
-			SOLVENT A, SOLVENT B, COLUMN_NAME}. 
+			to the MassBank entries \code{AC$CHROMATOGRAPHY: FLOW_GRADIENT, FLOW_RATE,
+			SOLVENT A, SOLVENT B, COLUMN_NAME}.
 
 			\code{ms_type, ionization} correspond to \code{AC$MASS_SPECTROMETRY: MS_TYPE, IONIZATION}.
 
 			\code{entry_prefix} is the two-letter prefix used when building MassBank accession codes.
 
 			Entries under \code{ms_dataprocessing} are added as \code{MS$DATA_PROCESSING:} entries,
-			in addition to the default \code{WHOLE: RMassBank}.   
+			in addition to the default \code{WHOLE: RMassBank}.
 			}
   	\item{\code{annotator}}{
-    For advanced users: option to select your own custom annotator. 
+    For advanced users: option to select your own custom annotator.
     Check \code{\link{annotator.default}} and the source code for details.}
 		\item{\code{spectraList}}{
   	This setting describes the experimental annotations for the single
 			data-dependent scans. For every data-dependent scan event, a \code{spectraList} entry with
-			\code{mode, ces, ce, res} denoting collision mode, collision energy in short and verbose 
+			\code{mode, ces, ce, res} denoting collision mode, collision energy in short and verbose
 			notation, and FT resolution.}
 		\item{\code{accessionNumberShifts}}{
   	This denotes the starting points for accession numbers
@@ -85,68 +85,68 @@ Describes all settings for the RMassBank settings file.
 			the \code{MS2} setting is used for a common recalibration curve. See \code{\link{recalibrate.loess}}
 			for details.}
   	\item{\code{multiplicityFilter}}{
-    Define the multiplicity filtering level. Default is 2, a value of 1 
+    Define the multiplicity filtering level. Default is 2, a value of 1
     is off (no filtering) and >2 is harsher filtering.}
     \item{\code{titleFormat}}{
     The title of MassBank records is a mini-summary
-    of the record, for example "Dinotefuran; LC-ESI-QFT; MS2; CE: 35%; R=35000; [M+H]+". 
-    By default, the first compound name \code{CH$NAME}, instrument type 
-    \code{AC$INSTRUMENT_TYPE}, MS/MS type \code{AC$MASS_SPECTROMETRY: MS_TYPE}, 
+    of the record, for example "Dinotefuran; LC-ESI-QFT; MS2; CE: 35%; R=35000; [M+H]+".
+    By default, the first compound name \code{CH$NAME}, instrument type
+    \code{AC$INSTRUMENT_TYPE}, MS/MS type \code{AC$MASS_SPECTROMETRY: MS_TYPE},
     collision energy \code{RECORD_TITLE_CE}, resolution \code{AC$MASS_SPECTROMETRY: RESOLUTION}
-    and precursor \code{MS$FOCUSED_ION: PRECURSOR_TYPE} are used. If alternative 
+    and precursor \code{MS$FOCUSED_ION: PRECURSOR_TYPE} are used. If alternative
     information is relevant to differentiate acquired spectra, the title should be adjusted.
-    For example, many TOFs do not have a resolution setting. 
+    For example, many TOFs do not have a resolution setting.
     See MassBank documentation for more.}
   	\item{\code{filterSettings}}{
 			A list of settings that affect the MS/MS processing. The entries
-			\code{ppmHighMass, ppmLowMass, massRangeDivision} set values for 
-  		pre-processing, prior to recalibration. \code{ppmHighMass} defines the 
-    	ppm error for the high mass range (default 10 ppm for Orbitraps), 
-      \code{ppmLowMass} is the error for the low mass range (default 15 ppm 
-      for Orbitraps) and \code{massRangeDivision} is the m/z value defining 
+			\code{ppmHighMass, ppmLowMass, massRangeDivision} set values for
+  		pre-processing, prior to recalibration. \code{ppmHighMass} defines the
+    	ppm error for the high mass range (default 10 ppm for Orbitraps),
+      \code{ppmLowMass} is the error for the low mass range (default 15 ppm
+      for Orbitraps) and \code{massRangeDivision} is the m/z value defining
       the split between the high and low mass range (default m/z = 120).
 
-			The entry \code{ppmFine} defines the ppm cut-off post recalibration. 
-  		The default value of 5 ppm is recommended for Orbitraps. For other 
+			The entry \code{ppmFine} defines the ppm cut-off post recalibration.
+  		The default value of 5 ppm is recommended for Orbitraps. For other
     	instruments this can be interpreted from the recalibration plot.
-     All ppm limits are one-sided (e.g. this includes values to +5 ppm or -5 ppm 
+     All ppm limits are one-sided (e.g. this includes values to +5 ppm or -5 ppm
      deviation from the exact mass).
-			
-			The entries \code{prelimCut, prelimCutRatio} define the intensity cut-off and 
-  		cut-off ratio (in % of the most intense peak) for pre-processing. This affects 
-    	the peak selection for the recalibration only. Careful: the default value 
-      1e4 for Orbitrap LTQ positive mode could remove all peaks for TOF data 
+
+			The entries \code{prelimCut, prelimCutRatio} define the intensity cut-off and
+  		cut-off ratio (in % of the most intense peak) for pre-processing. This affects
+    	the peak selection for the recalibration only. Careful: the default value
+      1e4 for Orbitrap LTQ positive mode could remove all peaks for TOF data
       and will remove too many peaks for Orbitrap LTQ negative mode spectra!
 
 			The entry \code{specOKLimit} defines the intensity limit to include MS/MS spectra.
-  		MS/MS spectra must have at least one peak above this limit to proceed through 
+  		MS/MS spectra must have at least one peak above this limit to proceed through
     	the workflow.
 
-			\code{dbeMinLimit} defines the minimum allowable ring and double bond equivalents (DBE) 
-  		allowed for assigned formulas. This assumes maximum valuences for elements with 
+			\code{dbeMinLimit} defines the minimum allowable ring and double bond equivalents (DBE)
+  		allowed for assigned formulas. This assumes maximum valuences for elements with
     	multiple valence states. The default is -0.5 (accounting for fragments being ions).
 
-			The entries \code{satelliteMzLimit, satelliteIntLimit} define the cut-off m/z and 
-  		intensity values for satellite peak removal (an artefact of Fourier Transform 
-    	processing). All peaks within the m/z limit (default 0.5) and intensity ratio 
-      (default 0.05 or 5 %) of the respective peak will be removed. Applicable to 
-      Fourier Transform instruments only (e.g. Orbitrap).   
-			}  
+			The entries \code{satelliteMzLimit, satelliteIntLimit} define the cut-off m/z and
+  		intensity values for satellite peak removal (an artefact of Fourier Transform
+    	processing). All peaks within the m/z limit (default 0.5) and intensity ratio
+      (default 0.05 or 5 %) of the respective peak will be removed. Applicable to
+      Fourier Transform instruments only (e.g. Orbitrap).
+			}
     \item{\code{filterSettings}}{
-			Parameters for adjusting the raw data retrieval. 
-  		The entry \code{ppmFine} defines the ppm error to look for the precursor in 
+			Parameters for adjusting the raw data retrieval.
+  		The entry \code{ppmFine} defines the ppm error to look for the precursor in
     	the MS1 (parent) spectrum. Default is 10 ppm for Orbitrap.
 
-			\code{mzCoarse} defines the error to search for the precursor specification 
-  		in the MS2 spectrum. This is often only saved to 2 decimal places and thus 
-    	can be quite inaccurate. The accuracy also depends on the isolation window used. 
+			\code{mzCoarse} defines the error to search for the precursor specification
+  		in the MS2 spectrum. This is often only saved to 2 decimal places and thus
+    	can be quite inaccurate. The accuracy also depends on the isolation window used.
       The default settings (for e.g. Orbitrap) is 0.5 (Da, or Th for m/z).
 
-			The entry \code{fillPrecursorScan} is largely untested. The default value 
+			The entry \code{fillPrecursorScan} is largely untested. The default value
   		(FALSE) assumes all necessary precursor information is available in the mzML file.
     	A setting ot TRUE tries to fill in the precursor data scan number if it is missing.
-      Only tested on one case study so far - feedback welcome!   
-			}  
+      Only tested on one case study so far - feedback welcome!
+			}
 }
 }
 \seealso{

@@ -7,7 +7,7 @@
 \alias{loadRmbSettingsFromEnv}
 \title{RMassBank settings}
 \usage{
-loadRmbSettings(file_or_list) 
+loadRmbSettings(file_or_list)
 
 loadRmbSettingsFromEnv(env = .GlobalEnv)
 
@@ -32,9 +32,9 @@ Load, set and reset settings for RMassBank.
 \code{RmbSettingsTemplate} creates a template file in which you can adjust the
 settings as you like. Before using RMassBank, you must then load the
 settings file using \code{loadRmbSettings}. \code{RmbDefaultSettings} loads
-the default settings. \code{loadRmbSettingsFromEnv} loads the settings 
+the default settings. \code{loadRmbSettingsFromEnv} loads the settings
 stored in env$RmbSettings, which is useful when reloading archives with
-saved settings inside.  
+saved settings inside.
 
 Note: no settings are loaded upon loading MassBank!
 This is intended, so that one never forgets to load the correct settings.
