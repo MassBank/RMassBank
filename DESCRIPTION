@@ -28,6 +28,7 @@ Description: Workflow to process tandem MS files and build MassBank
     MassBank records.
 License: Artistic-2.0
 Depends:
+    R (>= 4.1.0)
     Rcpp
 Imports:
     assertthat,
